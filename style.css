@@ -1,0 +1,85 @@
+/*
+		
+Copyright 2016 Summerside Makerspace Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.		
+		
+*/
+
+html{
+	overflow-y: scroll;
+	visibility: hidden;
+}
+
+.wf-active{
+	visibility: visible;
+}
+
+body{
+	color: #1f1f1f;
+	font-family: Raleway;
+	font-size: 17px;
+}
+
+body.modal-open{
+    padding-right: 0 !important;
+}
+
+.social-links i{
+	font-size: 32px;
+}
+
+.page-header{
+	border-bottom-color: #96172e;
+	position: relative;
+}
+
+.page-header h1 a{
+	color: #1f1f1f;
+	text-decoration: none;
+}
+
+.sidebar{
+	margin-top: 60px;
+	text-align: justify;
+}
+ 
+.modal-content{
+	padding: 45px;
+}
+  
+.footer{
+	margin-top: 30px;
+	border-top: 1px solid #96172e;
+	text-align: center;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+@media screen and (min-width: 768px){
+	.sidebar{
+		margin-top: 0;
+	}	
+}
+
+@media screen and (min-width: 992px){
+	.page-header h1{
+		margin-bottom: 10px;
+	}
+	
+	.social-links{
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+}
