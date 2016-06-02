@@ -42,6 +42,7 @@ WebFontConfig = {
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<script src="enigma.js"></script>
+		<script src="enigma-gui.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 		<link rel='stylesheet' id='font-awesome-css'  href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css?ver=4.5.2' type='text/css' media='all'>
 		<link rel="stylesheet" href="style.css">
@@ -68,15 +69,164 @@ WebFontConfig = {
 						<li><a class="btn btn-default" style="color: rgb(243, 134, 48)" href="https://github.com/SummersideMakerspace/Enigma-Machine/" title="Fork this on GitHub"><i class="fa fa-code-fork" aria-hidden="true"></i></a></li>
 					</ul>
 				</div>			
-				<h3>Enigma Machine</h3>
+				<h3>Enigma Machine Simulator</h3>
 			</div>
-			<div class="row">
-				<div class="col-xs-12 col-sm-8">
-					Main
-				</div>			
-				<div class="col-xs-12 col-sm-4 sidebar">
-					Sidebar
+			<div class="text-center field">
+				<div class="row">
+					<div class="col-xs-2">
+						<h4>Reflector</h4>
+					</div>
+					<div class="col-xs-7">
+						<div class="row rotors">
+							<div class="col-xs-4">
+								<h4>Slow Rotor</h4>
+							</div>
+							<div class="col-xs-4">
+								<h4>Middle Rotor</h4>
+							</div>
+							<div class="col-xs-4">
+								<h4>Fast Rotor</h4>						
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-6">
+								<h4>Plugboard</h4>								
+							</div>
+							<div class="col-xs-6">
+								<h4>Lamps/Keys</h4>						
+							</div>
+						</div>
+					</div>
 				</div>
+				<div class="row">
+					<div class="col-xs-2">
+						<select class="form-control reflector-select">
+							<option value="B">B</option>
+							<option value="C">C</option>
+						</select>
+					</div>
+					<div class="col-xs-7">
+						<div class="row rotors">
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="form-control slow-rotor-select">
+										<option value="I">I</option>
+										<option value="II">II</option>
+										<option value="III">III</option>
+										<option value="IV">IV</option>
+										<option value="V">V</option>
+										<option value="VI">VI</option>
+										<option value="VII">VII</option>
+										<option value="VIII">VIII</option>
+									</select>
+									<div class="form-group">
+										<label>Ring</label>
+										<select class="form-control slow-rotor-ring-setting">
+										</select>
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="form-control middle-rotor-select">
+										<option value="I">I</option>
+										<option value="II" selected>II</option>
+										<option value="III">III</option>
+										<option value="IV">IV</option>
+										<option value="V">V</option>
+										<option value="VI">VI</option>
+										<option value="VII">VII</option>
+										<option value="VIII">VIII</option>
+									</select>
+									<div class="form-group">
+										<label>Ring</label>
+										<select class="form-control middle-rotor-ring-setting">
+										</select>
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="form-control fast-rotor-select">
+										<option value="I">I</option>
+										<option value="II">II</option>
+										<option value="III" selected>III</option>
+										<option value="IV">IV</option>
+										<option value="V">V</option>
+										<option value="VI">VI</option>
+										<option value="VII">VII</option>
+										<option value="VIII">VIII</option>
+									</select>
+									<div class="form-group">
+										<label>Ring</label>
+										<select class="form-control fast-rotor-ring-setting">
+										</select>
+									</div>
+								</form>				
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-6">
+								<button class="btn btn-default"><i class="fa fa-cogs"></i></button>
+							</div>
+							<div class="col-xs-6">
+								<input type="text" class="form-control keyboard-input" placeholder="Text Entry">
+							</div>
+						</div>
+					</div>
+				</div>	
+				<div class="separator"></div>
+				<div class="row">
+					<div class="col-xs-2 reflector">					
+					</div>
+					<div class="col-xs-7">
+						<div class="row rotors">
+							<div class="col-xs-4 rotor-slow">
+							</div>
+							<div class="col-xs-4 rotor-middle">
+							</div>
+							<div class="col-xs-4 rotor-fast">
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-6 plugboard">								
+							</div>
+							<div class="col-xs-6 lampboard-keyboard">					
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="separator"></div>
+				<div class="row">
+					<div class="col-xs-7 col-xs-offset-2">
+						<div class="row rotor-displays">
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="input-lg form-control rotor-slow-display">
+									</select>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="input-lg form-control rotor-middle-display">
+									</select>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<select class="input-lg form-control rotor-fast-display">
+									</select>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>				
 			</div>
 			<footer class="footer">
 				<a href="http://summersidemakerspace.ca/" title="Summerside Makerspace"><img alt="Summerside Makerspace" src="maker.png"></a><br>

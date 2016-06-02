@@ -66,6 +66,77 @@ body.modal-open{
 	padding-bottom: 15px;
 }
 
+.field{
+	font-size: 12px;
+}
+
+.alphabet-set{
+	width: 28px;
+	line-height: 18px;
+}
+
+.alphabet-left{
+	float: left;
+}
+
+.alphabet-right{
+	float: right;
+}
+
+.alphabet-odds{
+	margin-top: 9px;
+}
+
+.alphabet-pair-left{
+	float: left;
+}
+
+.alphabet-pair-right{
+	float: right;
+}
+
+.wire{
+	position: absolute;
+	height: 1px;
+	background-color: #dcdcdc;
+	-webkit-transform-origin: 0 100%;
+	-moz-transform-origin: 0 100%;
+	-o-transform-origin: 0 100%;
+	-ms-transform-origin: 0 100%;	
+	transform-origin: 0 100%;
+}
+
+.wire.hot-in{
+	background-color: #FF0000;
+	z-index: 99;
+}
+
+.wire.hot-out{
+	background-color: #0000FF;
+}
+
+.reflector-wire.wire.hot{
+	background: linear-gradient(90deg, #FF0000, #0000FF);
+}
+
+.alphabet-set .hot-in{
+	color: #FF0000;
+	text-decoration: underline;
+}
+
+.alphabet-set .hot-out{
+	color: #0000FF;
+}
+
+.field .fa{
+	font-size: 16px;
+}
+
+.field .separator{
+	display: block;
+	height: 15px;
+}
+
 @media screen and (min-width: 768px){
 	.sidebar{
 		margin-top: 0;
