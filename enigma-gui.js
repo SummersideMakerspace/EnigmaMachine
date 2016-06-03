@@ -65,28 +65,83 @@
 		});
 		
 		$('.keyboard-input').keydown(function(e){
-			if(e.which >= 'A'.charCodeAt() && e.which <= 'Z'.charCodeAt()){
-				$('.lampboard-keyboard .alphabet-set div div').each(function(idx, item){
-					$(item).removeClass('hot-in');
-				});				
-				$('.lampboard-keyboard .alphabet-set div div').each(function(idx, item){
-					$(item).removeClass('hot-out');
-				});
-				var slow_deflection = enigma.rotors[0].deflection;
-				var middle_deflection = enigma.rotors[1].deflection;
-				var result = enigma.cipher(String.fromCharCode(e.which));				
-				$('.lampboard-keyboard .alphabet-' + result).addClass('hot-out');
-				$('.lampboard-keyboard .alphabet-' + String.fromCharCode(e.which)).addClass('hot-in');
-				
-				if(slow_deflection != enigma.rotors[0].deflection){
-					redrawSlowRotor();
-				}
-				if(middle_deflection != enigma.rotors[1].deflection){
-					redrawMiddleRotor();
-				}
-				redrawFastRotor();
-				displayRotorPositions();
+			if(e.ctrlKey || e.altKey || e.metaKey || e.which < 'A'.charCodeAt() || e.which > 'Z'.charCodeAt()){
+				return;
 			}
+			
+			clearAllHotWires();
+			
+			var slow_deflection = enigma.rotors[0].deflection;
+			var middle_deflection = enigma.rotors[1].deflection;
+			
+			var result = enigma.cipher(String.fromCharCode(e.which));
+			
+			e.preventDefault();
+			$('.keyboard-input').val(String.fromCharCode(e.which) + ' -> ' + result + '  ');			
+			
+			if(slow_deflection != enigma.rotors[0].deflection){
+				redrawSlowRotor();
+			}
+			if(middle_deflection != enigma.rotors[1].deflection){
+				redrawMiddleRotor();
+			}
+			redrawFastRotor();
+			
+			displayRotorPositions();			
+			
+			$('.lampboard-keyboard .alphabet-' + String.fromCharCode(e.which)).addClass('hot-in');
+			$('.plugboard-wire-' + String.fromCharCode(e.which)).addClass('hot-in');
+			
+			$('.lampboard-keyboard .alphabet-' + result).addClass('hot-out');
+			$('.plugboard-wire-' + result).addClass('hot-out');
+			
+			var wire_position = enigma.static_rotor.letterToWire(enigma.plugboard.translate(String.fromCharCode(e.which)));
+			
+			$('.plugboard .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');
+			$('.plugboard .alphabet-' + result).addClass('hot-out');
+			
+			var rotors = ['rotor-fast', 'rotor-middle', 'rotor-slow'];
+			
+			for(var i in rotors){
+				var rotor_right = (wire_position + enigma.rotors[2 - i].deflection + (26 - enigma.rotors[2 - i].ring_setting)) % 26;
+				$('.' + rotors[i] + ' .alphabet-pair-right .alphabet-' + String.fromCharCode((rotor_right + enigma.rotors[2 - i].ring_setting) % 26 + 65)).addClass('hot-in');
+				$('.' + rotors[i] + '-wire-' + String.fromCharCode((rotor_right + enigma.rotors[2 - i].ring_setting) % 26 + 65)).addClass('hot-in');
+				$('.' + rotors[i] + ' .alphabet-pair-left .alphabet-' + String.fromCharCode((enigma.rotors[2 - i].encipher_map[rotor_right].charCodeAt() - 65 + enigma.rotors[2 - i].ring_setting) % 26 + 65)).addClass('hot-in');
+				$('.' + rotors[i] + ' .alphabet-hint-set .alphabet-' + String.fromCharCode(enigma.rotors[2 - i].encipher(wire_position) + 65)).addClass('hot-in');
+				wire_position = enigma.rotors[2 - i].encipher(wire_position);
+			}
+			
+			if(wire_position < enigma.reflector_wheel.cipher(wire_position)){
+				$('.reflector .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');
+				$('.reflector-wire-in-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');
+				$('.reflector-wire-middle-' + String.fromCharCode(wire_position + 65)).addClass('hot-in-out');
+				$('.reflector-wire-out-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');
+				
+				wire_position = enigma.reflector_wheel.cipher(wire_position);
+				$('.reflector .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');				
+			} else {
+				$('.reflector .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');				
+				
+				wire_position = enigma.reflector_wheel.cipher(wire_position);
+				$('.reflector .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');
+				$('.reflector-wire-in-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');
+				$('.reflector-wire-middle-' + String.fromCharCode(wire_position + 65)).addClass('hot-out-in');
+				$('.reflector-wire-out-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');
+				
+				
+			}
+			
+			var rotors = ['rotor-slow', 'rotor-middle', 'rotor-fast'];
+			
+			for(var i in rotors){
+				$('.' + rotors[i] + ' .alphabet-hint-set .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');				
+				var rotor_left = (wire_position + enigma.rotors[i].deflection + (26 - enigma.rotors[i].ring_setting)) % 26;
+				$('.' + rotors[i] + ' .alphabet-pair-right .alphabet-' + String.fromCharCode((enigma.rotors[i].decipher_map[rotor_left].charCodeAt() - 65 + enigma.rotors[i].ring_setting) % 26 + 65)).addClass('hot-out');
+				$('.' + rotors[i] + ' .alphabet-pair-left .alphabet-' + String.fromCharCode((rotor_left + enigma.rotors[i].ring_setting) % 26 + 65)).addClass('hot-out');
+				$('.' + rotors[i] + '-wire-' + String.fromCharCode((enigma.rotors[i].decipher_map[rotor_left].charCodeAt() - 65 + enigma.rotors[i].ring_setting) % 26 + 65)).addClass('hot-out');
+				
+				wire_position = enigma.rotors[i].decipher(wire_position);				
+			}			
 		});
 		
 		var resizer = {};
@@ -102,6 +157,18 @@
 			}, 250);
 		});
 	});
+	
+	function clearAllHotWires(){
+		$('.alphabet-set div div').each(function(idx, item){
+			$(item).removeClass('hot-in');
+			$(item).removeClass('hot-out');
+		});
+		$('.alphabet-hint-set div').each(function(idx, item){
+			$(item).removeClass('hot-in');
+			$(item).removeClass('hot-out');
+		});
+		$('.wire').removeClass('hot-in').removeClass('hot-out').removeClass('hot-in-out').removeClass('hot-out-in');		
+	}
 	
 	function redrawSlowRotor(){
 		$('.rotor-slow .rotor_field').empty();
@@ -145,6 +212,7 @@
 	}
 	
 	function makeEnigmaMachineFromSettings(){
+		clearAllHotWires();
 		enigma = new EnigmaMachine(
 			[
 				[$('.slow-rotor-select').val(), $('.rotor-slow-display').val().charCodeAt() - 65, $('.slow-rotor-ring-setting').val().charCodeAt() - 65],
@@ -152,7 +220,7 @@
 				[$('.fast-rotor-select').val(), $('.rotor-fast-display').val().charCodeAt() - 65, $('.fast-rotor-ring-setting').val().charCodeAt() - 65]
 			],
 			$('.reflector-select').val(),
-			['AT', 'BS']
+			[]
 		);	
 		console.log(enigma);
 	}
@@ -253,9 +321,9 @@
 			var source_position = {left: Math.floor(source_letter_box_offset.left - 7), top: source_letter_box_offset.top + adjustment_source + (source_element.height() / 2)};
 			var destination_position = {left: Math.floor(destination_letter_box_offset.left + destination_element.width() + 7), top: destination_letter_box_offset.top + adjustment_destination + (destination_element.height() / 2)};
 			
-			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10), source_position.top).addClass('plugboard-wire'));
-			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + (destination_index % 2 ? 10 : 24), destination_position.top).addClass('plugboard-wire'));
-			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10), source_position.top, destination_position.left + (destination_index % 2 ? 10 : 24), destination_position.top + adjustment_destination).addClass('plugboard-wire'));
+			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10), source_position.top).addClass('plugboard-wire').addClass('plugboard-wire-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + (destination_index % 2 ? 10 : 24), destination_position.top).addClass('plugboard-wire').addClass('plugboard-wire-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10), source_position.top, destination_position.left + (destination_index % 2 ? 10 : 24), destination_position.top + adjustment_destination).addClass('plugboard-wire').addClass('plugboard-wire-' + String.fromCharCode(idx + 65)));
 		}
 	}
 	
@@ -277,9 +345,9 @@
 			var source_position = {left: Math.floor(source_letter_box_offset.left - 7), top: source_letter_box_offset.top + adjustment_source + (source_element.height() / 2)};
 			var destination_position = {left: Math.floor(destination_letter_box_offset.left - 7), top: destination_letter_box_offset.top + adjustment_destination + (destination_element.height() / 2)};
 			
-			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top).addClass('reflector-wire'));
-			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top).addClass('reflector-wire'));
-			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top + adjustment_destination + 1).addClass('reflector-wire'));
+			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top).addClass('reflector-wire').addClass('reflector-wire-in-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top).addClass('reflector-wire').addClass('reflector-wire-out-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top + adjustment_destination + 1).addClass('reflector-wire').addClass('reflector-wire-middle-' + String.fromCharCode(idx + 65)));
 			
 			wire_depth++;
 			connected_letters.push(String.fromCharCode(destination_index + 65));
@@ -310,9 +378,9 @@
 			var source_position = {left: Math.floor(source_letter_box_offset.left - 7), top: source_letter_box_offset.top + adjustment_source + (source_element.height() / 2)};
 			var destination_position = {left: Math.floor(destination_letter_box_offset.left + destination_element.width() + 7), top: destination_letter_box_offset.top + adjustment_destination + (destination_element.height() / 2)};
 			
-			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 10 : 25), source_position.top).addClass(target_element.substr(1) + '-wire'));
-			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top).addClass(target_element.substr(1) + '-wire'));
-			$('body').append(createWire(source_position.left - (idx % 2 ? 10 : 25), source_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top + adjustment_destination).addClass(target_element.substr(1) + '-wire'));
+			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 10 : 25), source_position.top).addClass(target_element.substr(1) + '-wire').addClass(target_element.substr(1) + '-wire-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top).addClass(target_element.substr(1) + '-wire').addClass(target_element.substr(1) + '-wire-' + String.fromCharCode(idx + 65)));
+			$('body').append(createWire(source_position.left - (idx % 2 ? 10 : 25), source_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top + adjustment_destination).addClass(target_element.substr(1) + '-wire').addClass(target_element.substr(1) + '-wire-' + String.fromCharCode(idx + 65)));
 		}		
 	}
 	

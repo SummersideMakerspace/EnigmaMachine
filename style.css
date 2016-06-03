@@ -117,7 +117,7 @@ body.modal-open{
 }
 
 .wire.hot-in{
-	background-color: #FF0000;
+	background-color: #ff0000;
 	z-index: 99;
 }
 
@@ -125,16 +125,20 @@ body.modal-open{
 	background-color: #0000FF;
 }
 
-.reflector-wire.wire.hot{
-	background: linear-gradient(90deg, #FF0000, #0000FF);
+.reflector-wire.wire.hot-in-out{
+	background: linear-gradient(90deg, #ff0000, #0000FF);
+}
+
+.reflector-wire.wire.hot-out-in{
+	background: linear-gradient(90deg, #0000FF, #ff0000);
 }
 
 .alphabet-hint-set .hot-in{
-	color: #FF0000;	
+	color: #ff0000;	
 }
 
 .alphabet-set .hot-in{
-	color: #FF0000;
+	color: #ff0000;
 	text-decoration: underline;
 }
 
@@ -145,6 +149,18 @@ body.modal-open{
 .alphabet-set .hot-out{
 	color: #0000FF;
 	text-decoration: underline;	
+}
+
+.lampboard-keyboard .hot-in:after{
+	content: "<<<";
+	position: absolute;
+	right: 30px;
+}
+
+.lampboard-keyboard .hot-out:after{
+	content: ">>>";
+	position: absolute;
+	right: 30px;
 }
 
 .field .fa{
