@@ -144,9 +144,7 @@ limitations under the License.
 				$('.reflector .alphabet-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');
 				$('.reflector-wire-in-' + String.fromCharCode(wire_position + 65)).addClass('hot-out');
 				$('.reflector-wire-middle-' + String.fromCharCode(wire_position + 65)).addClass('hot-out-in');
-				$('.reflector-wire-out-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');
-				
-				
+				$('.reflector-wire-out-' + String.fromCharCode(wire_position + 65)).addClass('hot-in');				
 			}
 			
 			var rotors = ['rotor-slow', 'rotor-middle', 'rotor-fast'];
