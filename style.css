@@ -202,10 +202,24 @@ body.modal-open{
 	right: 11px;
 }
 
-@media screen and (min-width: 768px){
-	.sidebar{
-		margin-top: 0;
-	}	
+.plugboard-settings-field .input-group{
+	margin-bottom: 5px;
+}
+
+.plugboard-settings-field .input-group-addon{
+	width: 48px;
+}
+
+.enigma-controls button{
+	margin-bottom: 15px;
+}
+
+.enigma-controls div:last-child button{
+	margin-bottom: 0;
+}
+
+.bulk-text-output{
+	font-size: 16px;
 }
 
 @media screen and (min-width: 992px){

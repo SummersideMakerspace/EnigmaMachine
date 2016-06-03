@@ -30,6 +30,31 @@ limitations under the License.
 		}, 250);
 		displayRotorPositions();
 		
+		$('.plugboard-settings-field input').keydown(function(e){
+			e.preventDefault();
+			if(e.which < 'A'.charCodeAt() || e.which > 'Z'.charCodeAt()){
+				return;
+			}
+			if(e.which == $(this).attr('data-letter').charCodeAt()){
+				return;
+			}
+			$('.plugboard-settings-field input').each(function(){
+				if(e.which == $(this).val().charCodeAt()){
+					$(this).val('');
+				}
+				if($(this).val() == $(this).attr('data-letter')){
+					$(this).val('');
+				}
+			});
+			$(this).val(String.fromCharCode(e.which));			
+			$('.plugboard-setting-' + String.fromCharCode(e.which)).val($(this).attr('data-letter'));
+		});
+		
+		$('#enigma-modal').on('hidden.bs.modal', function(){
+			makeEnigmaMachineFromSettings();
+			reconnectLampsKeysToPlugboard();
+		});	
+		
 		$('.fast-rotor-select').change(function(){
 			makeEnigmaMachineFromSettings();
 			redrawFastRotor();
@@ -95,7 +120,7 @@ limitations under the License.
 			var result = enigma.cipher(String.fromCharCode(e.which));
 			
 			e.preventDefault();
-			$('.keyboard-input').val(String.fromCharCode(e.which) + ' -> ' + result + '  ');			
+			$('.keyboard-input').val(String.fromCharCode(e.which) + ' -> ' + result + '  ').attr('data-last-cipher', result);			
 			
 			if(slow_deflection != enigma.rotors[0].deflection){
 				redrawSlowRotor();
@@ -157,7 +182,7 @@ limitations under the License.
 				$('.' + rotors[i] + '-wire-' + String.fromCharCode((enigma.rotors[i].decipher_map[rotor_left].charCodeAt() - 65 + enigma.rotors[i].ring_setting) % 26 + 65)).addClass('hot-out');
 				
 				wire_position = enigma.rotors[i].decipher(wire_position);				
-			}			
+			}
 		});
 		
 		var resizer = {};
@@ -172,7 +197,49 @@ limitations under the License.
 				drawWires();
 			}, 250);
 		});
+		
+		$('.cipher-step').click(function(){
+			if($('.bulk-text-input').val().length > 0){
+				var letter = $('.bulk-text-input').val()[0].toUpperCase().charCodeAt();
+				$('.bulk-text-input').val($('.bulk-text-input').val().substr(1));				
+				if(letter < 'A'.charCodeAt() || letter > 'Z'.charCodeAt()){
+					if(letter == ' '.charCodeAt()){
+						$('.bulk-text-output').append(' ');
+					}
+					return;
+				}
+				$('.keyboard-input').trigger({type: 'keydown', which: letter, keyCode: letter});
+				if('Ciphertext comes out here' == $('.bulk-text-output').text()){
+					$('.bulk-text-output').empty();
+				}
+				$('.bulk-text-output').append($('.keyboard-input').attr('data-last-cipher'));
+			}
+		});
+		
+		$('.cipher-all').click(function(){
+			if($('.bulk-text-input').val().length > 0){
+				$('.bulk-text-output').empty().append(enigma.cipher($('.bulk-text-input').val()));
+				displayRotorPositions();
+			}
+		});		
+		
+		$('.bulk-text-output-clear').click(function(){
+			$('.bulk-text-output').text('Ciphertext comes out here');
+		});
+		
+		$('.cipher-play').click(function(){
+			bulkTextCipher();
+		});			
 	});
+	
+	function bulkTextCipher(){
+		if($('.bulk-text-input').val().length > 0){
+			$('.cipher-step').click();
+			setTimeout(function(){
+				bulkTextCipher();
+			}, 500);
+		}		
+	}
 	
 	function clearAllHotWires(){
 		$('.alphabet-set div div').each(function(idx, item){
@@ -224,11 +291,44 @@ limitations under the License.
 			$('.rotor-slow-display').append(option_element.clone());
 			$('.rotor-middle-display').append(option_element.clone());
 			$('.rotor-fast-display').append(option_element.clone());
-		}		
+		}	
+
+		var row = $(document.createElement('div')).addClass('row');
+		var column = $(document.createElement('div')).addClass('col-xs-4');
+		var input_group = $(document.createElement('div')).addClass('input-group');
+		var input_addon = $(document.createElement('div')).addClass('input-group-addon');
+		var input = $(document.createElement('input')).attr('type', 'text').addClass('form-control');
+		for(var idx = 0; idx < 9; idx++){
+			column.append(input_group.clone().append(input_addon.clone().append(String.fromCharCode(idx + 65))).append(input.clone().attr('data-letter', String.fromCharCode(idx + 65)).addClass('plugboard-setting-' + String.fromCharCode(idx + 65))));
+		}
+		row.append(column.clone());
+		column.empty();
+		for(var idx = 9; idx < 18; idx++){
+			column.append(input_group.clone().append(input_addon.clone().append(String.fromCharCode(idx + 65))).append(input.clone().attr('data-letter', String.fromCharCode(idx + 65)).addClass('plugboard-setting-' + String.fromCharCode(idx + 65))));
+		}
+		row.append(column.clone());
+		column.empty();
+		for(var idx = 18; idx < 26; idx++){
+			column.append(input_group.clone().append(input_addon.clone().append(String.fromCharCode(idx + 65))).append(input.clone().attr('data-letter', String.fromCharCode(idx + 65)).addClass('plugboard-setting-' + String.fromCharCode(idx + 65))));
+		}
+		row.append(column.clone());
+		$('.plugboard-settings-field').append(row);	
 	}
 	
 	function makeEnigmaMachineFromSettings(){
 		clearAllHotWires();
+		
+		var plugboard_connected = [];
+		var plugboard = [];
+		$('.plugboard-settings-field input').each(function(){
+			if(plugboard_connected.indexOf($(this).attr('data-letter')) > -1){
+				return;
+			}
+			if($(this).val().length > 0){
+				plugboard.push($(this).attr('data-letter') + $(this).val());
+				plugboard_connected.push($(this).attr('data-letter'));
+			}
+		});
 		enigma = new EnigmaMachine(
 			[
 				[$('.slow-rotor-select').val(), $('.rotor-slow-display').val().charCodeAt() - 65, $('.slow-rotor-ring-setting').val().charCodeAt() - 65],
@@ -236,9 +336,8 @@ limitations under the License.
 				[$('.fast-rotor-select').val(), $('.rotor-fast-display').val().charCodeAt() - 65, $('.fast-rotor-ring-setting').val().charCodeAt() - 65]
 			],
 			$('.reflector-select').val(),
-			[]
-		);	
-		console.log(enigma);
+			plugboard
+		);
 	}
 	
 	function drawField(){
@@ -317,6 +416,11 @@ limitations under the License.
 		rotor_field.append(alphabet_set_pair.clone().addClass('alphabet-pair-right'));
 
 		return rotor_field;
+	}
+	
+	function reconnectLampsKeysToPlugboard(){
+		$('.plugboard-wire').remove();
+		connectLampsKeysToPlugboard();
 	}
 	
 	function connectLampsKeysToPlugboard(){

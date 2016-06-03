@@ -54,8 +54,12 @@ WebFontConfig = {
 	</head>
 	<body>
 		<div id="enigma-modal" class="modal fade enigma-overlay" tabindex="-1" role="dialog" aria-labelledby="enigma-modal">
-		  <div class="modal-dialog modal-sm">
+		  <div class="modal-dialog">
 			<div class="modal-content">
+				<h2>Plugboard Settings</h2>
+				<hr>
+				<div class="plugboard-settings-field"></div>
+				</div>
 			</div>
 		  </div>
 		</div>	
@@ -171,7 +175,7 @@ WebFontConfig = {
 					<div class="col-xs-3">
 						<div class="row">
 							<div class="col-xs-6">
-								<button class="btn btn-default"><i class="fa fa-cogs"></i></button>
+								<button class="plugboard-settings btn btn-default" data-toggle="modal" data-target="#enigma-modal"><i class="fa fa-cogs"></i></button>
 							</div>
 							<div class="col-xs-6">
 								<input type="text" class="text-center form-control keyboard-input" placeholder="Text Entry">
@@ -226,7 +230,24 @@ WebFontConfig = {
 							</div>
 						</div>
 					</div>
-				</div>				
+				</div>	
+				<hr>
+				<div class="row">
+					<div class="col-xs-5">
+						<textarea rows="6" class="bulk-text-input form-control" placeholder="Your message text here"></textarea>
+					</div>
+					<div class="col-xs-2 enigma-controls">
+						<div><button class="btn btn-default cipher-step">Cipher One Letter</button></div>
+						<div><button class="btn btn-default cipher-all">Cipher All</button></div>
+						<div><button class="btn btn-default cipher-play">Play</button></div>
+					</div>
+					<div class="col-xs-5">
+						<p class="bulk-text-output form-control-static">Ciphertext comes out here</p>
+						<div class="separator"></div>
+						<hr>
+						<div><button class="btn btn-default bulk-text-output-clear">Clear Ciphertext</button></div>
+					</div>
+				</div>
 			</div>
 			<footer class="footer">
 				<a href="http://summersidemakerspace.ca/" title="Summerside Makerspace"><img alt="Summerside Makerspace" src="maker.png"></a><br>
