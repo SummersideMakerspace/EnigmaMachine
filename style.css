@@ -70,6 +70,16 @@ body.modal-open{
 	font-size: 12px;
 }
 
+.alphabet-hint-set{
+	position: absolute;
+	left: -15px;
+	top: 5px;
+	width: 30px;
+	font-size: 10px;
+	line-height: 9px;
+	color: #eeeeee;
+}
+
 .alphabet-set{
 	width: 28px;
 	line-height: 18px;
@@ -83,7 +93,7 @@ body.modal-open{
 	float: right;
 }
 
-.alphabet-odds{
+.alphabet-offset{
 	margin-top: 9px;
 }
 
@@ -119,13 +129,22 @@ body.modal-open{
 	background: linear-gradient(90deg, #FF0000, #0000FF);
 }
 
+.alphabet-hint-set .hot-in{
+	color: #FF0000;	
+}
+
 .alphabet-set .hot-in{
 	color: #FF0000;
 	text-decoration: underline;
 }
 
+.alphabet-hint-set .hot-out{
+	color: #0000FF;	
+}
+
 .alphabet-set .hot-out{
 	color: #0000FF;
+	text-decoration: underline;	
 }
 
 .field .fa{

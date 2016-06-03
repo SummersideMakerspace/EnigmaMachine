@@ -21,6 +21,11 @@
 			makeEnigmaMachineFromSettings();
 			redrawFastRotor();
 			displayRotorPositions();
+		});
+		$('.rotor-fast-display').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawFastRotor();
+			displayRotorPositions();
 		});		
 		$('.middle-rotor-select').change(function(){
 			makeEnigmaMachineFromSettings();
@@ -28,6 +33,11 @@
 			displayRotorPositions();
 		});
 		$('.middle-rotor-ring-setting').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawMiddleRotor();
+			displayRotorPositions();
+		});
+		$('.rotor-middle-display').change(function(){
 			makeEnigmaMachineFromSettings();
 			redrawMiddleRotor();
 			displayRotorPositions();
@@ -42,11 +52,41 @@
 			redrawSlowRotor();
 			displayRotorPositions();
 		});
+		$('.rotor-slow-display').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawSlowRotor();
+			displayRotorPositions();
+		});
 		$('.reflector-select').change(function(){
 			$('.reflector-wire').remove();
 			makeEnigmaMachineFromSettings();
 			connectReflectorInternalWiring();
 			displayRotorPositions();
+		});
+		
+		$('.keyboard-input').keydown(function(e){
+			if(e.which >= 'A'.charCodeAt() && e.which <= 'Z'.charCodeAt()){
+				$('.lampboard-keyboard .alphabet-set div div').each(function(idx, item){
+					$(item).removeClass('hot-in');
+				});				
+				$('.lampboard-keyboard .alphabet-set div div').each(function(idx, item){
+					$(item).removeClass('hot-out');
+				});
+				var slow_deflection = enigma.rotors[0].deflection;
+				var middle_deflection = enigma.rotors[1].deflection;
+				var result = enigma.cipher(String.fromCharCode(e.which));				
+				$('.lampboard-keyboard .alphabet-' + result).addClass('hot-out');
+				$('.lampboard-keyboard .alphabet-' + String.fromCharCode(e.which)).addClass('hot-in');
+				
+				if(slow_deflection != enigma.rotors[0].deflection){
+					redrawSlowRotor();
+				}
+				if(middle_deflection != enigma.rotors[1].deflection){
+					redrawMiddleRotor();
+				}
+				redrawFastRotor();
+				displayRotorPositions();
+			}
 		});
 		
 		var resizer = {};
@@ -64,21 +104,21 @@
 	});
 	
 	function redrawSlowRotor(){
-		$('.rotor-slow').empty();
+		$('.rotor-slow .rotor_field').empty();
 		$('.rotor-slow-wire').remove();
 		drawSlowRotorField();
 		connectSlowRotorInternalWiring();		
 	}
 
 	function redrawMiddleRotor(){
-		$('.rotor-middle').empty();
+		$('.rotor-middle .rotor_field').empty();
 		$('.rotor-middle-wire').remove();
 		drawMiddleRotorField();
 		connectMiddleRotorInternalWiring();		
 	}
 
 	function redrawFastRotor(){
-		$('.rotor-fast').empty();
+		$('.rotor-fast .rotor_field').empty();
 		$('.rotor-fast-wire').remove();
 		drawFastRotorField();
 		connectFastRotorInternalWiring();		
@@ -107,9 +147,9 @@
 	function makeEnigmaMachineFromSettings(){
 		enigma = new EnigmaMachine(
 			[
-				[$('.slow-rotor-select').val(), 0, $('.slow-rotor-ring-setting').val().charCodeAt() - 65],
-				[$('.middle-rotor-select').val(), 0, $('.middle-rotor-ring-setting').val().charCodeAt() - 65], 
-				[$('.fast-rotor-select').val(), 0, $('.fast-rotor-ring-setting').val().charCodeAt() - 65]
+				[$('.slow-rotor-select').val(), $('.rotor-slow-display').val().charCodeAt() - 65, $('.slow-rotor-ring-setting').val().charCodeAt() - 65],
+				[$('.middle-rotor-select').val(), $('.rotor-middle-display').val().charCodeAt() - 65, $('.middle-rotor-ring-setting').val().charCodeAt() - 65], 
+				[$('.fast-rotor-select').val(), $('.rotor-fast-display').val().charCodeAt() - 65, $('.fast-rotor-ring-setting').val().charCodeAt() - 65]
 			],
 			$('.reflector-select').val(),
 			['AT', 'BS']
@@ -127,11 +167,21 @@
 		for(var idx = 1; idx < 26; idx += 2){
 			odds.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append(String.fromCharCode(idx + 65)));
 		}
+		odds.addClass('alphabet-offset');
 		alphabet_set.append(evens.clone().addClass('alphabet-left')).append(odds.clone().addClass('alphabet-right'));
 		
 		$('.lampboard-keyboard').append(alphabet_set.clone());		
 		$('.plugboard').append(alphabet_set.clone());
 		$('.reflector').append(alphabet_set.clone().removeClass('center-block').addClass('pull-right'));		
+		
+		var alphabet_hint_set = $(document.createElement('div')).addClass('center-block').addClass('alphabet-hint-set');
+		for(var idx = 0; idx < 26; idx++){
+			alphabet_hint_set.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append('- ' + String.fromCharCode(idx + 65) + ' -'));
+		}
+
+		$('.rotor-slow').append(alphabet_hint_set.clone()).append($(document.createElement('div')).addClass('rotor_field'));
+		$('.rotor-middle').append(alphabet_hint_set.clone()).append($(document.createElement('div')).addClass('rotor_field'));
+		$('.rotor-fast').append(alphabet_hint_set.clone()).append($(document.createElement('div')).addClass('rotor_field'));
 		
 		drawRotorFields();
 	}
@@ -143,27 +193,33 @@
 	}
 	
 	function drawSlowRotorField(){
-		$('.rotor-slow').append(createRotorField(enigma.rotors[0]));
+		$('.rotor-slow .rotor_field').append(createRotorField(enigma.rotors[0]));
 	}
 	
 	function drawMiddleRotorField(){
-		$('.rotor-middle').append(createRotorField(enigma.rotors[1]));
+		$('.rotor-middle .rotor_field').append(createRotorField(enigma.rotors[1]));
 	}
 	
 	function drawFastRotorField(){
-		$('.rotor-fast').append(createRotorField(enigma.rotors[2]));
+		$('.rotor-fast .rotor_field').append(createRotorField(enigma.rotors[2]));
 	}
 	
 	function createRotorField(rotor){
-		var alphabet_set = $(document.createElement('div')).addClass('center-block').addClass('alphabet-set');		
+		var alphabet_set = $(document.createElement('div')).addClass('center-block').addClass('alphabet-set');				
 		var evens = $(document.createElement('div')).addClass('alphabet-evens');
-		for(var idx = 0; idx < 26; idx += 2){
-			evens.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append(String.fromCharCode(idx + 65)));
+		for(var idx = 0; idx < 13; idx++){
+			evens.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(((idx + Math.ceil(rotor.deflection / 2)) * 2) % 26 + 65)).append(String.fromCharCode(((idx + Math.ceil(rotor.deflection  / 2)) * 2) % 26 + 65)));
 		}
 		var odds = $(document.createElement('div')).addClass('alphabet-odds');
-		for(var idx = 1; idx < 26; idx += 2){
-			odds.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append(String.fromCharCode(idx + 65)));
-		}	
+		for(var idx = 0; idx < 13; idx++){
+			odds.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(((idx + Math.floor(rotor.deflection / 2)) * 2 + 1) % 26 + 65)).append(String.fromCharCode(((idx + Math.floor(rotor.deflection / 2)) * 2 + 1) % 26 + 65)));
+		}
+		if(rotor.deflection % 2){
+			evens.addClass('alphabet-offset');
+		} else {
+			odds.addClass('alphabet-offset');
+		}
+		
 		alphabet_set.append(evens.clone().addClass('alphabet-left')).append(odds.clone().addClass('alphabet-right'));		
 		alphabet_set.find('.alphabet-' + String.fromCharCode(rotor.ring_setting + 65)).addClass('alphabet-ring-setting');
 		
