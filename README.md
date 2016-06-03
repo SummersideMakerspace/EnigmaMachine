@@ -1,2 +1,2 @@
 # Enigma Machine
-Being a browser based version of the cipher machine
+Being a browser based simulation of the cipher machine
