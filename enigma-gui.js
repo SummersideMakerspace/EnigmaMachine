@@ -9,25 +9,37 @@
 		// Delay to allow DOM to update
 		setTimeout(function(){
 			drawWires();
-		}, 100);
+		}, 250);
 		displayRotorPositions();
 		
 		$('.fast-rotor-select').change(function(){
-			$('.rotor-fast-wire').remove();
 			makeEnigmaMachineFromSettings();
-			connectFastRotorInternalWiring();
+			redrawFastRotor();
 			displayRotorPositions();
 		});
-		$('.middle-rotor-select').change(function(){
-			$('.rotor-middle-wire').remove();
+		$('.fast-rotor-ring-setting').change(function(){
 			makeEnigmaMachineFromSettings();
-			connectMiddleRotorInternalWiring();
+			redrawFastRotor();
+			displayRotorPositions();
+		});		
+		$('.middle-rotor-select').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawMiddleRotor();
+			displayRotorPositions();
+		});
+		$('.middle-rotor-ring-setting').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawMiddleRotor();
 			displayRotorPositions();
 		});
 		$('.slow-rotor-select').change(function(){
-			$('.rotor-slow-wire').remove();
 			makeEnigmaMachineFromSettings();
-			connectSlowRotorInternalWiring();
+			redrawSlowRotor();
+			displayRotorPositions();
+		});
+		$('.slow-rotor-ring-setting').change(function(){
+			makeEnigmaMachineFromSettings();
+			redrawSlowRotor();
 			displayRotorPositions();
 		});
 		$('.reflector-select').change(function(){
@@ -36,7 +48,41 @@
 			connectReflectorInternalWiring();
 			displayRotorPositions();
 		});
+		
+		var resizer = {};
+		$(window).resize(function(){
+			$('.rotor-fast-wire').remove();
+			$('.rotor-middle-wire').remove();
+			$('.rotor-slow-wire').remove();
+			$('.reflector-wire').remove();
+			$('.plugboard-wire').remove();
+			clearTimeout(resizer);
+			resizer = setTimeout(function(){
+				drawWires();
+			}, 250);
+		});
 	});
+	
+	function redrawSlowRotor(){
+		$('.rotor-slow').empty();
+		$('.rotor-slow-wire').remove();
+		drawSlowRotorField();
+		connectSlowRotorInternalWiring();		
+	}
+
+	function redrawMiddleRotor(){
+		$('.rotor-middle').empty();
+		$('.rotor-middle-wire').remove();
+		drawMiddleRotorField();
+		connectMiddleRotorInternalWiring();		
+	}
+
+	function redrawFastRotor(){
+		$('.rotor-fast').empty();
+		$('.rotor-fast-wire').remove();
+		drawFastRotorField();
+		connectFastRotorInternalWiring();		
+	}
 	
 	function drawWires(){
 		connectLampsKeysToPlugboard();
@@ -61,9 +107,9 @@
 	function makeEnigmaMachineFromSettings(){
 		enigma = new EnigmaMachine(
 			[
-				$('.slow-rotor-select').val(), 
-				$('.middle-rotor-select').val(), 
-				$('.fast-rotor-select').val() 
+				[$('.slow-rotor-select').val(), 0, $('.slow-rotor-ring-setting').val().charCodeAt() - 65],
+				[$('.middle-rotor-select').val(), 0, $('.middle-rotor-ring-setting').val().charCodeAt() - 65], 
+				[$('.fast-rotor-select').val(), 0, $('.fast-rotor-ring-setting').val().charCodeAt() - 65]
 			],
 			$('.reflector-select').val(),
 			['AT', 'BS']
@@ -87,16 +133,50 @@
 		$('.plugboard').append(alphabet_set.clone());
 		$('.reflector').append(alphabet_set.clone().removeClass('center-block').addClass('pull-right'));		
 		
+		drawRotorFields();
+	}
+	
+	function drawRotorFields(){
+		drawSlowRotorField();
+		drawMiddleRotorField();
+		drawFastRotorField();
+	}
+	
+	function drawSlowRotorField(){
+		$('.rotor-slow').append(createRotorField(enigma.rotors[0]));
+	}
+	
+	function drawMiddleRotorField(){
+		$('.rotor-middle').append(createRotorField(enigma.rotors[1]));
+	}
+	
+	function drawFastRotorField(){
+		$('.rotor-fast').append(createRotorField(enigma.rotors[2]));
+	}
+	
+	function createRotorField(rotor){
+		var alphabet_set = $(document.createElement('div')).addClass('center-block').addClass('alphabet-set');		
+		var evens = $(document.createElement('div')).addClass('alphabet-evens');
+		for(var idx = 0; idx < 26; idx += 2){
+			evens.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append(String.fromCharCode(idx + 65)));
+		}
+		var odds = $(document.createElement('div')).addClass('alphabet-odds');
+		for(var idx = 1; idx < 26; idx += 2){
+			odds.append($(document.createElement('div')).addClass('alphabet-' + String.fromCharCode(idx + 65)).append(String.fromCharCode(idx + 65)));
+		}	
+		alphabet_set.append(evens.clone().addClass('alphabet-left')).append(odds.clone().addClass('alphabet-right'));		
+		alphabet_set.find('.alphabet-' + String.fromCharCode(rotor.ring_setting + 65)).addClass('alphabet-ring-setting');
+		
 		var alphabet_set_pair = $(document.createElement('div')).addClass('alphabet-set');
 		alphabet_set_pair.append(evens.clone().addClass('alphabet-right'));
 		alphabet_set_pair.append(odds.clone().addClass('alphabet-left'));
-		var rotor = $(document.createElement('div'));
-		rotor.append(alphabet_set.clone().removeClass('center-block').addClass('alphabet-pair-left'));
-		rotor.append(alphabet_set_pair.clone().addClass('alphabet-pair-right'));
+		alphabet_set_pair.find('.alphabet-' + String.fromCharCode(rotor.ring_setting + 65)).addClass('alphabet-ring-setting');
 		
-		$('.rotor-slow').append(rotor.clone());
-		$('.rotor-middle').append(rotor.clone());
-		$('.rotor-fast').append(rotor.clone());
+		var rotor_field = $(document.createElement('div'));
+		rotor_field.append(alphabet_set.clone().removeClass('center-block').addClass('alphabet-pair-left'));
+		rotor_field.append(alphabet_set_pair.clone().addClass('alphabet-pair-right'));
+
+		return rotor_field;
 	}
 	
 	function connectLampsKeysToPlugboard(){
@@ -141,9 +221,9 @@
 			var source_position = {left: Math.floor(source_letter_box_offset.left - 7), top: source_letter_box_offset.top + adjustment_source + (source_element.height() / 2)};
 			var destination_position = {left: Math.floor(destination_letter_box_offset.left - 7), top: destination_letter_box_offset.top + adjustment_destination + (destination_element.height() / 2)};
 			
-			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 9, source_position.top).addClass('reflector-wire'));
-			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 9, destination_position.top).addClass('reflector-wire'));
-			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 9, source_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 9, destination_position.top + adjustment_destination + 1).addClass('reflector-wire'));
+			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top).addClass('reflector-wire'));
+			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top).addClass('reflector-wire'));
+			$('body').append(createWire(source_position.left - (idx % 2 ? 29 : 10) - wire_depth * 8, source_position.top, destination_position.left - (destination_index % 2 ? 29 : 10) - wire_depth * 8, destination_position.top + adjustment_destination + 1).addClass('reflector-wire'));
 			
 			wire_depth++;
 			connected_letters.push(String.fromCharCode(destination_index + 65));
@@ -151,23 +231,23 @@
 	}
 	
 	function connectFastRotorInternalWiring(){
-		connectRotorInternalWiring('.rotor-fast', enigma.rotors[2].encipher_map);
+		connectRotorInternalWiring('.rotor-fast', enigma.rotors[2]);
 	}
 
 	function connectMiddleRotorInternalWiring(){
-		connectRotorInternalWiring('.rotor-middle', enigma.rotors[1].encipher_map);
+		connectRotorInternalWiring('.rotor-middle', enigma.rotors[1]);
 	}
 
 	function connectSlowRotorInternalWiring(){
-		connectRotorInternalWiring('.rotor-slow', enigma.rotors[0].encipher_map);
+		connectRotorInternalWiring('.rotor-slow', enigma.rotors[0]);
 	}
 	
-	function connectRotorInternalWiring(target_element, cipher_map){
+	function connectRotorInternalWiring(target_element, rotor){
 		var adjustment_source = -2; // tweak to get lines in the right places
 		var adjustment_destination = -1; // tweak to get lines in the right places
 		for(var idx = 0; idx < 26; idx++){
 			var source_element = $(target_element + ' .alphabet-pair-right .alphabet-' + String.fromCharCode(idx + 65));
-			var destination_element = $(target_element + ' .alphabet-pair-left .alphabet-' + cipher_map[idx]);
+			var destination_element = $(target_element + ' .alphabet-pair-left .alphabet-' + String.fromCharCode(((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26 + 65));
 			
 			var source_letter_box_offset = source_element.offset();
 			var destination_letter_box_offset = destination_element.offset();
@@ -175,8 +255,8 @@
 			var destination_position = {left: Math.floor(destination_letter_box_offset.left + destination_element.width() + 7), top: destination_letter_box_offset.top + adjustment_destination + (destination_element.height() / 2)};
 			
 			$('body').append(createWire(source_position.left, source_position.top, source_position.left - (idx % 2 ? 10 : 25), source_position.top).addClass(target_element.substr(1) + '-wire'));
-			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + ((cipher_map[idx].charCodeAt() - 65) % 2 ? 10 : 25), destination_position.top).addClass(target_element.substr(1) + '-wire'));
-			$('body').append(createWire(source_position.left - (idx % 2 ? 10 : 25), source_position.top, destination_position.left + ((cipher_map[idx].charCodeAt() - 65) % 2 ? 10 : 25), destination_position.top + adjustment_destination).addClass(target_element.substr(1) + '-wire'));
+			$('body').append(createWire(destination_position.left, destination_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top).addClass(target_element.substr(1) + '-wire'));
+			$('body').append(createWire(source_position.left - (idx % 2 ? 10 : 25), source_position.top, destination_position.left + ((((rotor.encipher_map[(idx + (26 - rotor.ring_setting)) % 26].charCodeAt() - 65) + rotor.ring_setting) % 26) % 2 ? 10 : 25), destination_position.top + adjustment_destination).addClass(target_element.substr(1) + '-wire'));
 		}		
 	}
 	

@@ -137,6 +137,36 @@ body.modal-open{
 	height: 15px;
 }
 
+.alphabet-pair-left .alphabet-ring-setting:before{
+	content: "\2022";
+	font-weight: bold;
+	position: absolute;
+	color: #00CC00;
+}
+
+.alphabet-pair-right .alphabet-ring-setting:after{
+	content: "\2022";
+	font-weight: bold;
+	position: absolute;
+	color: #00CC00;
+}
+
+.alphabet-pair-left .alphabet-evens .alphabet-ring-setting:before{
+	left: 11px;
+}
+
+.alphabet-pair-left .alphabet-odds .alphabet-ring-setting:before{
+	left: 28px;
+}
+
+.alphabet-pair-right .alphabet-odds .alphabet-ring-setting:after{
+	right: 28px;
+}
+
+.alphabet-pair-right .alphabet-evens .alphabet-ring-setting:after{
+	right: 11px;
+}
+
 @media screen and (min-width: 768px){
 	.sidebar{
 		margin-top: 0;
