@@ -206,6 +206,7 @@ limitations under the License.
 					if(letter == ' '.charCodeAt()){
 						$('.bulk-text-output').append(' ');
 					}
+					$('.cipher-step').click();
 					return;
 				}
 				$('.keyboard-input').trigger({type: 'keydown', which: letter, keyCode: letter});
@@ -229,6 +230,23 @@ limitations under the License.
 		
 		$('.cipher-play').click(function(){
 			bulkTextCipher();
+		});
+
+		$('.cipher-play2').click(function(){
+			if($(this).hasClass('active')){
+				$(this).removeClass('active');
+			} else {
+				$('.cipher-play10').removeClass('active');
+				$(this).addClass('active');
+			}
+		});
+		$('.cipher-play10').click(function(){
+			if($(this).hasClass('active')){
+				$(this).removeClass('active');
+			} else {
+				$('.cipher-play2').removeClass('active');
+				$(this).addClass('active');
+			}
 		});			
 	});
 	
@@ -237,7 +255,8 @@ limitations under the License.
 			$('.cipher-step').click();
 			setTimeout(function(){
 				bulkTextCipher();
-			}, 500);
+				console.log($('cipher-play2').hasClass('active'));
+			}, $('.cipher-play2').hasClass('active') ? 250 : ($('.cipher-play10').hasClass('active') ? 50 : 500));
 		}		
 	}
 	
