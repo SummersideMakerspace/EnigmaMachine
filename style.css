@@ -70,6 +70,16 @@ body.modal-open{
 	font-size: 12px;
 }
 
+.alphabet-hint-set{
+	position: absolute;
+	left: -15px;
+	top: 5px;
+	width: 30px;
+	font-size: 10px;
+	line-height: 9px;
+	color: #eeeeee;
+}
+
 .alphabet-set{
 	width: 28px;
 	line-height: 18px;
@@ -83,7 +93,7 @@ body.modal-open{
 	float: right;
 }
 
-.alphabet-odds{
+.alphabet-offset{
 	margin-top: 9px;
 }
 
@@ -107,7 +117,7 @@ body.modal-open{
 }
 
 .wire.hot-in{
-	background-color: #FF0000;
+	background-color: #ff0000;
 	z-index: 99;
 }
 
@@ -115,17 +125,42 @@ body.modal-open{
 	background-color: #0000FF;
 }
 
-.reflector-wire.wire.hot{
-	background: linear-gradient(90deg, #FF0000, #0000FF);
+.reflector-wire.wire.hot-in-out{
+	background: linear-gradient(90deg, #ff0000, #0000FF);
+}
+
+.reflector-wire.wire.hot-out-in{
+	background: linear-gradient(90deg, #0000FF, #ff0000);
+}
+
+.alphabet-hint-set .hot-in{
+	color: #ff0000;	
 }
 
 .alphabet-set .hot-in{
-	color: #FF0000;
+	color: #ff0000;
 	text-decoration: underline;
+}
+
+.alphabet-hint-set .hot-out{
+	color: #0000FF;	
 }
 
 .alphabet-set .hot-out{
 	color: #0000FF;
+	text-decoration: underline;	
+}
+
+.lampboard-keyboard .hot-in:after{
+	content: "<<<";
+	position: absolute;
+	right: 30px;
+}
+
+.lampboard-keyboard .hot-out:after{
+	content: ">>>";
+	position: absolute;
+	right: 30px;
 }
 
 .field .fa{
@@ -137,10 +172,54 @@ body.modal-open{
 	height: 15px;
 }
 
-@media screen and (min-width: 768px){
-	.sidebar{
-		margin-top: 0;
-	}	
+.alphabet-pair-left .alphabet-ring-setting:before{
+	content: "\2022";
+	font-weight: bold;
+	position: absolute;
+	color: #00CC00;
+}
+
+.alphabet-pair-right .alphabet-ring-setting:after{
+	content: "\2022";
+	font-weight: bold;
+	position: absolute;
+	color: #00CC00;
+}
+
+.alphabet-pair-left .alphabet-evens .alphabet-ring-setting:before{
+	left: 11px;
+}
+
+.alphabet-pair-left .alphabet-odds .alphabet-ring-setting:before{
+	left: 28px;
+}
+
+.alphabet-pair-right .alphabet-odds .alphabet-ring-setting:after{
+	right: 28px;
+}
+
+.alphabet-pair-right .alphabet-evens .alphabet-ring-setting:after{
+	right: 11px;
+}
+
+.plugboard-settings-field .input-group{
+	margin-bottom: 5px;
+}
+
+.plugboard-settings-field .input-group-addon{
+	width: 48px;
+}
+
+.enigma-controls button{
+	margin-bottom: 15px;
+}
+
+.enigma-controls div:last-child button{
+	margin-bottom: 0;
+}
+
+.bulk-text-output{
+	font-size: 16px;
 }
 
 @media screen and (min-width: 992px){

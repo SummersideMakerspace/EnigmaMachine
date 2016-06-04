@@ -91,14 +91,14 @@ Rotor = function(model_label, deflection = 0, ring_setting = 0){
 }
 Rotor.prototype = {
 	encipher: function(wire_position){
-		var contact_position_right = (wire_position + this.deflection + (26 - this.ring_setting)) % 26;
-		var contact_position_left = this.encipher_map[contact_position_right].charCodeAt() - 65;
-		return (contact_position_left + (26 - this.deflection) + this.ring_setting) % 26;
+		this.contact_position_right = (wire_position + this.deflection + (26 - this.ring_setting)) % 26;
+		this.contact_position_left = this.encipher_map[this.contact_position_right].charCodeAt() - 65;
+		return (this.contact_position_left + (26 - this.deflection) + this.ring_setting) % 26;
 	},
 	decipher: function(wire_position){
-		var contact_position_right = (wire_position + this.deflection + (26 - this.ring_setting)) % 26;
-		var contact_position_left = this.decipher_map[contact_position_right].charCodeAt() - 65;
-		return (contact_position_left + (26 - this.deflection) + this.ring_setting) % 26;
+		this.contact_position_left = (wire_position + this.deflection + (26 - this.ring_setting)) % 26;
+		this.contact_position_right = this.decipher_map[this.contact_position_left].charCodeAt() - 65;
+		return (this.contact_position_right + (26 - this.deflection) + this.ring_setting) % 26;
 	},
 	step: function(){
 		this.deflection = (this.deflection + 1) % 26;
@@ -151,7 +151,7 @@ EnigmaMachine.prototype = {
 	cipher: function(message){
 		var result = '';
 		for(var i in message.split('')){
-			result += this.cipherLetter(message[i]);
+			result += (message[i] == ' ') ? ' ' : this.cipherLetter(message[i]);
 		}
 		return result;
 	},

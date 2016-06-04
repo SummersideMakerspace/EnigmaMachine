@@ -267,5 +267,9 @@
 			enigma = new EnigmaMachine([['III', 20, 0], ['VI', 25, 7], ['VIII', 21, 12]], 'B', ['AN', 'EZ', 'HK', 'IJ', 'LR', 'MQ', 'OT', 'PV', 'SW', 'UX']);
 			assert.equal(enigma.cipher('YKAENZAPMSCHZBFOCUVMRMDPYCOFHADZIZMEFXTHFLOLPZLFGGBOTGOXGRETDWTJIQHLMXVJWKZUASTR'), 'STEUEREJTANAFJORDJANSTANDORTQUAAACCCVIERNEUNNEUNZWOFAHRTZWONULSMXXSCHARNHORSTHCO', 'Scharnhorst (Konteradmiral Erich Bey) - This message was sent from the battleship Scharnhorst on 26th December 1943, the day on which it was sunk by torpedoes from British destroyers.');
 		});
+		QUnit.test("It allows spaces in the text and passes these through to the ciphertext", function(assert){
+			var enigma = new EnigmaMachine(['I', 'II', 'III'], 'B');
+			assert.equal(enigma.cipher('A A A'), 'B D Z', "Enigma with rotor set I, II, III and reflector B ciphers 'A A A' to 'B D Z'");
+		});
 	});
 })(jQuery);
