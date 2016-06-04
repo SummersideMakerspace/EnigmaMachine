@@ -151,7 +151,7 @@ EnigmaMachine.prototype = {
 	cipher: function(message){
 		var result = '';
 		for(var i in message.split('')){
-			result += this.cipherLetter(message[i]);
+			result += (message[i] == ' ') ? ' ' : this.cipherLetter(message[i]);
 		}
 		return result;
 	},
