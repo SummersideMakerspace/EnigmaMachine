@@ -229,7 +229,19 @@ limitations under the License.
 		});
 		
 		$('.cipher-play').click(function(){
-			bulkTextCipher();
+			if(!running){
+				running = true;
+			} else {
+				running = false;
+			}
+			if(running){
+				bulkTextCipher();
+			}
+			if(running){
+				$('.cipher-play').text('Stop');
+			} else {
+				$('.cipher-play').text('Play');
+			}
 		});
 
 		$('.cipher-play2').click(function(){
@@ -250,12 +262,15 @@ limitations under the License.
 		});			
 	});
 	
+	var running = false;
 	function bulkTextCipher(){
+		if(!running){
+			return;
+		}
 		if($('.bulk-text-input').val().length > 0){
 			$('.cipher-step').click();
 			setTimeout(function(){
 				bulkTextCipher();
-				console.log($('cipher-play2').hasClass('active'));
 			}, $('.cipher-play2').hasClass('active') ? 250 : ($('.cipher-play10').hasClass('active') ? 50 : 500));
 		}		
 	}
