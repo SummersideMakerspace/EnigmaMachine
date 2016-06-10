@@ -43,6 +43,15 @@ WebFontConfig = {
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<script src="enigma.js"></script>
 		<script src="enigma-gui.js"></script>
+		<script>
+
+(function($){
+	$(document).ready(function(){
+		var gui = new EnigmaMachineGUI();		
+	});
+})(jQuery)		
+	
+		</script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 		<link rel='stylesheet' id='font-awesome-css'  href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css?ver=4.5.2' type='text/css' media='all'>
 		<link rel="stylesheet" href="style.css">
@@ -56,13 +65,41 @@ WebFontConfig = {
 		<div id="enigma-modal" class="modal fade enigma-overlay" tabindex="-1" role="dialog" aria-labelledby="enigma-modal">
 		  <div class="modal-dialog">
 			<div class="modal-content">
-				<h2>Plugboard Settings</h2>
-				<hr>
-				<div class="plugboard-settings-field"></div>
+				<div class="modal-header">
+					<button type="button" class="close modal-close" data-dismiss="modal">&times;</button>
+					<h2 class="modal-title">Plugboard Settings</h2>
+				</div>
+				<div class="modal-body">
+					<div class="plugboard-settings-field"></div>
+				</div>
+				<div class="modal-footer">
+					<h4>Uhr Configuration</h4>
+					<ul>
+						<li>Enter pairs of Uhr plug numbers in the letter fields.</li>
+						<li>Uhr plug pairs have an 'A' or 'B' in the first letter.</li>
+						<li>Uhr plug pairs have a number 0-9 in the second letter.</li>
+						<li>Example: Connect A to B - in A enter 'A0', in B enter 'B0'</li>
+						<li>To work as intended, the Uhr must have all 10 pairs connected</li>
+					</ul>
 				</div>
 			</div>
 		  </div>
-		</div>	
+		</div>
+		<div id="enigma-modal-ukw-d" class="modal fade enigma-overlay-ukw-d" tabindex="-1" role="dialog" aria-labelledby="enigma-modal-ukw-d">
+		  <div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close modal-close" data-dismiss="modal">&times;</button>
+					<h2 class="modal-title">UKW-D Settings</h2>
+				</div>
+				<div class="modal-body">
+					<div class="ukw-d-settings-field"></div>
+				</div>
+				<div class="modal-footer">
+				</div>
+			</div>
+		  </div>
+		</div>		
 		<div class="container">
 			<div class="page-header text-center">
 				<h1><a href="http://summersidemakerspace.ca/" title="Summerside Makerspace">Summerside Makerspace</a></h1>			
@@ -75,13 +112,64 @@ WebFontConfig = {
 				</div>			
 				<h3>Enigma Machine Simulator</h3>
 			</div>
-			<div class="text-center field">
+		</div>
+		<div class="text-center field">
+			<div class="container">
 				<div class="row">
-					<div class="col-xs-2">
-						<h4>Reflector</h4>
+					<div class="col-xs-5">
+						<form class="form-inline">
+							<div class="form-group">
+								<label>Enigma Machine Version:</label>
+								<select class="form-control enigma-machine-select"></select>
+							</div>
+						</form>
 					</div>
-					<div class="col-xs-7">
-						<div class="row rotors">
+					<div class="col-xs-7">	
+						<div class="row">
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<div class="form-group">
+										<label>Stepping:</label>
+										<select class="form-control enigma-machine-step-mechanism" disabled></select>
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<div class="form-group">
+										<label>Plugboard Available:</label>
+										<select class="form-control enigma-machine-plugboard-available" disabled></select>
+									</div>
+								</form>
+							</div>
+							<div class="col-xs-4">
+								<form class="form-inline">
+									<div class="form-group">
+										<label>Plugboard Uhr:</label>
+										<select class="form-control enigma-machine-plugboard-uhr">
+										</select>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid">
+				<hr>
+				<div class="row">
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-7">
+								<h4>Reflector</h4>
+							</div>
+							<div class="col-xs-5">
+								<h4>Thin Rotor</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="row">
 							<div class="col-xs-4">
 								<h4>Slow Rotor</h4>
 							</div>
@@ -99,32 +187,38 @@ WebFontConfig = {
 								<h4>Plugboard</h4>								
 							</div>
 							<div class="col-xs-6">
-								<h4>Lamps/Keys</h4>						
+								<h4>Entry Wheel</h4>						
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-2">
-						<select class="form-control reflector-select">
-							<option value="B">B</option>
-							<option value="C">C</option>
-						</select>
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-7">	
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button class="btn btn-default ukw-d-settings" data-toggle="modal" data-target="#enigma-modal-ukw-d"><i class="fa fa-cogs"></i></button>
+									</div>
+									<select class="form-control reflector-select"></select>
+								</div>
+							</div>
+							<div class="col-xs-5">	
+								<form class="form-inline">
+									<select class="form-control thin-rotor-select"></select>
+									<div class="form-group">
+										<select class="form-control thin-rotor-ring-setting">
+										</select>
+									</div>
+								</form>							
+							</div>
+						</div>
 					</div>
-					<div class="col-xs-7">
+					<div class="col-xs-6">
 						<div class="row rotors">
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="form-control slow-rotor-select">
-										<option value="I">I</option>
-										<option value="II">II</option>
-										<option value="III">III</option>
-										<option value="IV">IV</option>
-										<option value="V">V</option>
-										<option value="VI">VI</option>
-										<option value="VII">VII</option>
-										<option value="VIII">VIII</option>
-									</select>
+									<select class="form-control slow-rotor-select"></select>
 									<div class="form-group">
 										<label>Ring</label>
 										<select class="form-control slow-rotor-ring-setting">
@@ -134,16 +228,7 @@ WebFontConfig = {
 							</div>
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="form-control middle-rotor-select">
-										<option value="I">I</option>
-										<option value="II" selected>II</option>
-										<option value="III">III</option>
-										<option value="IV">IV</option>
-										<option value="V">V</option>
-										<option value="VI">VI</option>
-										<option value="VII">VII</option>
-										<option value="VIII">VIII</option>
-									</select>
+									<select class="form-control middle-rotor-select"></select>
 									<div class="form-group">
 										<label>Ring</label>
 										<select class="form-control middle-rotor-ring-setting">
@@ -153,16 +238,7 @@ WebFontConfig = {
 							</div>
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="form-control fast-rotor-select">
-										<option value="I">I</option>
-										<option value="II">II</option>
-										<option value="III" selected>III</option>
-										<option value="IV">IV</option>
-										<option value="V">V</option>
-										<option value="VI">VI</option>
-										<option value="VII">VII</option>
-										<option value="VIII">VIII</option>
-									</select>
+									<select class="form-control fast-rotor-select"></select>
 									<div class="form-group">
 										<label>Ring</label>
 										<select class="form-control fast-rotor-ring-setting">
@@ -177,23 +253,29 @@ WebFontConfig = {
 							<div class="col-xs-6">
 								<button class="plugboard-settings btn btn-default" data-toggle="modal" data-target="#enigma-modal"><i class="fa fa-cogs"></i></button>
 							</div>
-							<div class="col-xs-6">
-								<input type="text" class="text-center form-control keyboard-input" placeholder="Text Entry">
+							<div class="col-xs-6 txt-success">
+								<input type="text" class="text-center form-control enigma-io" placeholder="&laquo; Text Entry &raquo;">
 							</div>
 						</div>
 					</div>
 				</div>	
 				<div class="separator"></div>
 				<div class="row">
-					<div class="col-xs-2 reflector">					
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-7 reflector">
+							</div>
+							<div class="col-xs-5 thin-rotor">
+							</div>
+						</div>
 					</div>
-					<div class="col-xs-7">
-						<div class="row rotors">
-							<div class="col-xs-4 rotor-slow">
+					<div class="col-xs-6">
+						<div class="row">
+							<div class="col-xs-4 slow-rotor">
 							</div>
-							<div class="col-xs-4 rotor-middle">
+							<div class="col-xs-4 middle-rotor">
 							</div>
-							<div class="col-xs-4 rotor-fast">
+							<div class="col-xs-4 fast-rotor">
 							</div>
 						</div>
 					</div>
@@ -201,54 +283,74 @@ WebFontConfig = {
 						<div class="row">
 							<div class="col-xs-6 plugboard">								
 							</div>
-							<div class="col-xs-6 lampboard-keyboard">					
+							<div class="col-xs-6 entry-wheel">					
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="separator"></div>
 				<div class="row">
-					<div class="col-xs-7 col-xs-offset-2">
-						<div class="row rotor-displays">
+					<div class="col-xs-3">
+						<div class="row">
+							<div class="col-xs-7">
+								<form class="form-inline">
+									<select class="input-lg form-control reflector-ground-setting">
+									</select>
+								</form>							
+							</div>
+							<div class="col-xs-5">
+								<form class="form-inline">
+									<select class="input-lg form-control thin-rotor-ground-setting">
+									</select>
+								</form>							
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="row">
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="input-lg form-control rotor-slow-display">
+									<select class="input-lg form-control slow-rotor-ground-setting">
 									</select>
 								</form>
 							</div>
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="input-lg form-control rotor-middle-display">
+									<select class="input-lg form-control middle-rotor-ground-setting">
 									</select>
 								</form>
 							</div>
 							<div class="col-xs-4">
 								<form class="form-inline">
-									<select class="input-lg form-control rotor-fast-display">
+									<select class="input-lg form-control fast-rotor-ground-setting">
 									</select>
 								</form>
 							</div>
 						</div>
 					</div>
-				</div>	
-				<hr>
+				</div>
+				<hr>				
+			</div>
+			<div class="container">
 				<div class="row">
 					<div class="col-xs-5">
 						<textarea rows="6" class="bulk-text-input form-control" placeholder="Your message text here"></textarea>
 					</div>
 					<div class="col-xs-2 enigma-controls">
-						<div><button class="btn btn-default cipher-step">Cipher One Letter</button></div>
-						<div><button class="btn btn-default cipher-all">Cipher All</button></div>
-						<div><button class="btn btn-default cipher-play">Play</button> <button class="btn btn-default cipher-play2">x2</button> <button class="btn btn-default cipher-play10">x10</button></div>
+						<div><button class="btn btn-default enigma-step">Cipher One Letter</button></div>
+						<div><button class="btn btn-default enigma-all">Cipher All</button></div>
+						<div><button class="btn btn-default enigma-play">Play</button> <button class="btn btn-default enigma-play-x2">x2</button> <button class="btn btn-default enigma-play-x10">x10</button></div>
 					</div>
 					<div class="col-xs-5">
-						<p class="bulk-text-output form-control-static">Ciphertext comes out here</p>
+						<p class="bulk-text-output form-control-static">Ciphertext output</p>
 						<div class="separator"></div>
 						<hr>
 						<div><button class="btn btn-default bulk-text-output-clear">Clear Ciphertext</button></div>
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="container">
 			<footer class="footer">
 				<a href="http://summersidemakerspace.ca/" title="Summerside Makerspace"><img alt="Summerside Makerspace" src="maker.png"></a><br>
 				Copyright &copy; 2016 <a href="http://summersidemakerspace.ca/" title="Summerside Makerspace">Summerside Makerspace Inc.</a>.

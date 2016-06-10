@@ -55,9 +55,21 @@ body.modal-open{
 }
  
 .modal-content{
-	padding: 45px;
+	padding: 15px;
 }
-  
+
+.modal-footer{
+	text-align: left;
+}
+
+.modal-close{
+	font-size: 32px;
+}
+
+.modal ul{
+	font-size: 16px;
+}
+
 .footer{
 	margin-top: 30px;
 	border-top: 1px solid #96172e;
@@ -70,7 +82,11 @@ body.modal-open{
 	font-size: 12px;
 }
 
-.alphabet-hint-set{
+.reflector{
+	position: relative;
+}
+
+.wire-path-targets{
 	position: absolute;
 	left: -15px;
 	top: 5px;
@@ -80,9 +96,13 @@ body.modal-open{
 	color: #eeeeee;
 }
 
-.alphabet-set{
+.contacts{
 	width: 28px;
 	line-height: 18px;
+}
+
+.text-muted .contacts{
+	color: #eeeeee;
 }
 
 .alphabet-left{
@@ -123,44 +143,55 @@ body.modal-open{
 
 .wire.hot-out{
 	background-color: #0000FF;
+	z-index: 98;
 }
 
 .reflector-wire.wire.hot-in-out{
 	background: linear-gradient(90deg, #ff0000, #0000FF);
+	z-index: 97;
 }
 
 .reflector-wire.wire.hot-out-in{
 	background: linear-gradient(90deg, #0000FF, #ff0000);
+	z-index: 97;
 }
 
-.alphabet-hint-set .hot-in{
+.wire-path-targets .hot-in{
 	color: #ff0000;	
 }
 
-.alphabet-set .hot-in{
+.contacts .hot-in{
 	color: #ff0000;
 	text-decoration: underline;
 }
 
-.alphabet-hint-set .hot-out{
+.wire-path-targets .hot-out{
 	color: #0000FF;	
 }
 
-.alphabet-set .hot-out{
+.contacts .hot-out{
 	color: #0000FF;
 	text-decoration: underline;	
 }
 
-.lampboard-keyboard .hot-in:after{
+.entry-wheel .contacts .hot-in:after{
 	content: "<<<";
+	text-align: right;
+	width: 80px;
 	position: absolute;
-	right: 30px;
+	right: 0;
+	left: 0;
+	margin: auto;
 }
 
-.lampboard-keyboard .hot-out:after{
+.entry-wheel .contacts .hot-out:after{
 	content: ">>>";
+	text-align: right;
+	width: 80px;
 	position: absolute;
-	right: 30px;
+	right: 0;
+	left: 0;
+	margin: auto;
 }
 
 .field .fa{
@@ -202,10 +233,12 @@ body.modal-open{
 	right: 11px;
 }
 
+.ukw-d-settings-field .input-group,
 .plugboard-settings-field .input-group{
 	margin-bottom: 5px;
 }
 
+.ukw-d-settings-field .input-group-addon,
 .plugboard-settings-field .input-group-addon{
 	width: 48px;
 }
@@ -216,6 +249,22 @@ body.modal-open{
 
 .enigma-controls div:last-child button{
 	margin-bottom: 0;
+}
+
+.enigma-io::-webkit-input-placeholder {
+   color: #009900;
+}
+
+.enigma-io:-moz-placeholder {
+   color: #009900;  
+}
+
+.enigma-io::-moz-placeholder {
+   color: #009900;  
+}
+
+.enigma-io:-ms-input-placeholder {  
+   color: #009900;  
 }
 
 .bulk-text-output{

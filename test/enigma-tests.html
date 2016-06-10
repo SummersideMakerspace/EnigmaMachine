@@ -6,11 +6,65 @@
 		<title>Enigma Machine</title>
 		<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>		
 		<script src="../enigma.js"></script>
+		<script src="../enigma-gui.js"></script>
 		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css">
 	</head>
 	<body>
 		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
+		<div id="qunit-fixture">
+			<select class="enigma-machine-select"></select>
+			<div class="enigma-machine-step-mechanism"></div>
+			<div class="enigma-machine-plugboard-available"></div>
+			<div class="enigma-machine-plugboard-uhr"></div>
+			<div class="plugboard-settings"></div>
+			<div style="display: none"><!-- Extra div for display classes -->
+				<div class="plugboard-settings-field"></div>
+			</div>
+			<select class="reflector-select"></select>
+			<div><!-- Extra div for display classes -->
+				<div><!-- Extra div for display classes -->
+					<button class="ukw-d-settings"></button>
+				</div>
+			</div>
+			<div style="display: none"><!-- Extra div for display classes -->
+				<div class="ukw-d-settings-field"></div>
+			</div>			
+			<select class="reflector-ground-setting"></select>
+			<select class="thin-rotor-select"></select>
+			<select class="thin-rotor-ring-setting"></select>
+			<select class="thin-rotor-ground-setting"></select>
+			<div><!-- Extra div for warning classes -->
+				<select class="slow-rotor-select"></select>
+			</div>
+			<select class="slow-rotor-ring-setting"></select>
+			<select class="slow-rotor-ground-setting"></select>
+			<div><!-- Extra div for warning classes -->
+				<select class="middle-rotor-select"></select>
+			</div>
+			<select class="middle-rotor-ring-setting"></select>
+			<select class="middle-rotor-ground-setting"></select>
+			<div><!-- Extra div for warning classes -->
+				<select class="fast-rotor-select"></select>
+			</div>
+			<select class="fast-rotor-ring-setting"></select>
+			<select class="fast-rotor-ground-setting"></select>
+			<div class="reflector"></div>
+			<div class="thin-rotor"></div>
+			<div class="slow-rotor"></div>
+			<div class="middle-rotor"></div>
+			<div class="fast-rotor"></div>
+			<div class="plugboard"></div>
+			<div class="entry-wheel"></div>
+			<input type="text" class="enigma-io">
+			<textarea class="bulk-text-input"></textarea>
+			<p class="bulk-text-output">Ciphertext output</p>
+			<button class="bulk-text-output-clear"></button>
+			<button class="enigma-step"></button>
+			<button class="enigma-all"></button>
+			<button class="enigma-play">Play</button>
+			<button class="enigma-play-x2"></button>
+			<button class="enigma-play-x10"></button>		
+		</div>
 		<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
 		<script src="enigma-tests.js"></script>
 	</body>
