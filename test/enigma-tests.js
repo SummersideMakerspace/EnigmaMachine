@@ -243,7 +243,6 @@ limitations under the License.
 				var reflector = new ReflectorWheel('YRUHQSLDPXNGOKMIEBFZCWVJAT');
 				assert.deepEqual(reflector.cipher_map, 'YRUHQSLDPXNGOKMIEBFZCWVJAT'.split(''), "Reflector Wheel B has translation model YRUHQSLDPXNGOKMIEBFZCWVJAT");
 			});
-
 			QUnit.test("It ciphers wire positions", function(assert){	
 				var reflector = new ReflectorWheel('YRUHQSLDPXNGOKMIEBFZCWVJAT');
 				assert.equal(reflector.cipher(0), 24, "Reflector Wheel B ciphers 0 to 24");
@@ -317,6 +316,10 @@ limitations under the License.
 				enigma = new EnigmaMachine('M3', [['I', 4, 12]]);
 				assert.equal(enigma.rotors[0].deflection, 4, "Ground setting is 4");
 				assert.equal(enigma.rotors[0].ring_setting, 12, "Ring Setting is 12");
+			});
+			QUnit.test("It allows reflector set in the constructor to include ground setting", function(assert){
+				var enigma = new EnigmaMachine('G', [], ['UKW', 5]);
+				assert.equal(enigma.reflector_wheel.deflection, 5, "Ground setting is 5");
 			});
 			QUnit.test("It connects the rotors so that they step together in turnover positions", function(assert){
 				var enigma = new EnigmaMachine('M3', ['III', ['II', 3], ['I', 15]], 'B');
@@ -907,6 +910,14 @@ limitations under the License.
 					done();
 				}, 0);
 			});				
+			QUnit.test("It changes the reflector ground setting back to the default when a machine with no reflector ground position is selected", function(assert){
+				$('.enigma-machine-select').val('G').trigger('change');
+				$('.reflector-ground-setting').val('D').trigger('change');
+				$('.enigma-machine-select').val('G-312').trigger('change');
+				assert.equal($('.reflector-ground-setting').val(), 'D', "Reflector ground setting is D");
+				$('.enigma-machine-select').val('I').trigger('change');
+				assert.equal($('.reflector-ground-setting').val(), 'A', "Reflector ground setting is A")
+			});
 			
 			QUnit.module('Startup');
 			QUnit.test("It initializes an Enigma Machine from interface settings", function(assert){
@@ -1347,7 +1358,13 @@ limitations under the License.
 			});
 			QUnit.test("Enigma machine reflector wheel is changed by reflector-select interface element", function(assert){
 				$('.reflector-select').val('C Thin').trigger('change');
-				assert.deepEqual(gui.enigma.reflector_wheel.cipher_map, 'RDOBJNTKVEHMLFCWZAXGYIPSUQ'.split(''), "Reflector C");			
+				assert.deepEqual(gui.enigma.reflector_wheel.cipher_map, 'RDOBJNTKVEHMLFCWZAXGYIPSUQ'.split(''), "Reflector C");
+			});
+			QUnit.test("Reflector wheel ground setting is set when a new machine is selected", function(assert){
+				$('.enigma-machine-select').val('G').trigger('change');
+				$('.reflector-ground-setting').val('D').trigger('change');
+				$('.enigma-machine-select').val('G-312').trigger('change');
+				assert.equal(gui.enigma.reflector_wheel.deflection, 3, "Reflector ground setting");				
 			});
 			QUnit.test("Enigma machine rotors are changed by rotor-select interface elements", function(assert){			
 				$('.thin-rotor-select').val('γ').trigger('change');

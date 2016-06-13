@@ -157,7 +157,7 @@ ReflectorWheel.prototype = {
 }
 
 // ENIGMA
-EnigmaMachine = function(machine_version = 'M4', rotor_models = [], reflector_wheel_model = '', plugboard = [], uhr_setting = false){
+EnigmaMachine = function(machine_version = 'M4', rotor_models = [], reflector_wheel = '', plugboard = [], uhr_setting = false){
 	this.loadMachines();
 	this.getMachine(machine_version);
 	this.rotors = [];
@@ -168,10 +168,16 @@ EnigmaMachine = function(machine_version = 'M4', rotor_models = [], reflector_wh
 			this.rotors.push(new Rotor(this.available_rotors[rotor_models[i]]));
 		}
 	}
+	if(Array.isArray(reflector_wheel)){
+		var reflector_wheel_model = reflector_wheel[0];
+		this.reflector_wheel = new ReflectorWheel(this.available_reflectors[reflector_wheel[0]], reflector_wheel[1]);
+	} else {
+		var reflector_wheel_model = reflector_wheel;
+		this.reflector_wheel = new ReflectorWheel(this.available_reflectors[reflector_wheel]);	
+	}
 	if(machine_version == 'M4' && reflector_wheel_model == 'D'){
 		this.rotors.shift();
-	}
-	this.reflector_wheel = new ReflectorWheel(this.available_reflectors[reflector_wheel_model]);
+	}		
 	this.plugboard = !uhr_setting 
 		? new Plugboard(plugboard) 
 		: new Uhr(plugboard, uhr_setting);

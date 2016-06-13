@@ -546,6 +546,7 @@ EnigmaMachineGUI.prototype = {
 		if(this.enigma.cog_stepping){
 			$('.reflector-ground-setting').removeAttr('disabled');	
 		} else {
+			$('.reflector-ground-setting').val('A').trigger('change');
 			$('.reflector-ground-setting').attr('disabled', 'disabled');		
 		}
 	},
@@ -778,7 +779,10 @@ EnigmaMachineGUI.prototype = {
 		this.enigma = new EnigmaMachine(
 			$('.enigma-machine-select').val(), 
 			rotors,
-			$('.reflector-select').val(),
+			[
+				$('.reflector-select').val(),
+				$('.reflector-ground-setting').val().charCodeAt() - 65
+			],
 			plugboard,
 			$('.enigma-machine-plugboard-uhr').val() == '1' ? $('.plugboard-uhr-setting').val() : false
 		);
