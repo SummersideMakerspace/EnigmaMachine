@@ -98,7 +98,6 @@ EnigmaMachineGUI.prototype = {
 			
 			$('.slow-rotor-select option').each(function(idx, item){
 				if($(item).val() == previous_slow_rotor){
-					console.log('here');
 					$(item).prop('selected', true);
 					selected_slow_rotor = true;
 				}
