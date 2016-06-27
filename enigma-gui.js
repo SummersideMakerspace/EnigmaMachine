@@ -19,6 +19,7 @@ limitations under the License.
 function EnigmaMachineGUI(){
 	this.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 	this.running = false;
+	this.transform = this.getSupportedTransform();
 	this.initialize();
 }
 EnigmaMachineGUI.prototype = {
@@ -97,19 +98,20 @@ EnigmaMachineGUI.prototype = {
 			
 			$('.slow-rotor-select option').each(function(idx, item){
 				if($(item).val() == previous_slow_rotor){
-					$(item).attr('selected', 'selected');
+					console.log('here');
+					$(item).prop('selected', true);
 					selected_slow_rotor = true;
 				}
 			});
 			$('.middle-rotor-select option').each(function(idx, item){
 				if($(item).val() == previous_middle_rotor){
-					$(item).attr('selected', 'selected');
+					$(item).prop('selected', true);
 					selected_middle_rotor = true;
 				}
 			});
 			$('.fast-rotor-select option').each(function(idx, item){
 				if($(item).val() == previous_fast_rotor){
-					$(item).attr('selected', 'selected');
+					$(item).prop('selected', true);
 					selected_fast_rotor = true;
 				}
 			});		
@@ -419,11 +421,11 @@ EnigmaMachineGUI.prototype = {
 			html += '<option value="' + i + '"' + (i == 'M4' ? ' selected="selected"' : '') + '>' + this.enigma.machines[i].label + '</option>'
 		}
 		$('.enigma-machine-select').append(html);
-		$('.enigma-machine-step-mechanism').attr('disabled', 'disabled').append($(document.createElement('option')).val('ratchet').append('Ratchets').attr('selected', 'selected'));
+		$('.enigma-machine-step-mechanism').attr('disabled', 'disabled').append($(document.createElement('option')).val('ratchet').append('Ratchets').prop('selected', true));
 		$('.enigma-machine-step-mechanism').append($(document.createElement('option')).val('cog').append('Cogs'));
 		$('.enigma-machine-plugboard-available').attr('disabled', 'disabled').append($(document.createElement('option')).val('0').append('No'));
-		$('.enigma-machine-plugboard-available').append($(document.createElement('option')).val('1').append('Yes').attr('selected', 'selected'));
-		$('.enigma-machine-plugboard-uhr').append($(document.createElement('option')).val('0').append('No').attr('selected', 'selected'));
+		$('.enigma-machine-plugboard-available').append($(document.createElement('option')).val('1').append('Yes').prop('selected', true));
+		$('.enigma-machine-plugboard-uhr').append($(document.createElement('option')).val('0').append('No').prop('selected', true));
 		$('.enigma-machine-plugboard-uhr').append($(document.createElement('option')).val('1').append('Yes'));
 		this.drawPlugboardInterface();
 		this.drawReflectorInterface();
@@ -434,19 +436,19 @@ EnigmaMachineGUI.prototype = {
 	redrawInterface: function(){
 		if(this.enigma.cog_stepping){
 			$($('.enigma-machine-step-mechanism option')[0]).removeAttr('selected');
-			$($('.enigma-machine-step-mechanism option')[1]).attr('selected', 'selected');	
+			$($('.enigma-machine-step-mechanism option')[1]).prop('selected', true);	
 		} else {			
-			$($('.enigma-machine-step-mechanism option')[0]).attr('selected', 'selected');
+			$($('.enigma-machine-step-mechanism option')[0]).prop('selected', true);
 			$($('.enigma-machine-step-mechanism option')[1]).removeAttr('selected');				
 		}
 		if(this.enigma.has_plugboard){
 			$($('.enigma-machine-plugboard-available option')[0]).removeAttr('selected');
-			$($('.enigma-machine-plugboard-available option')[1]).attr('selected', 'selected');
+			$($('.enigma-machine-plugboard-available option')[1]).prop('selected', true);
 			$('.enigma-machine-plugboard-uhr').removeAttr('disabled');		
 		} else {
-			$($('.enigma-machine-plugboard-available option')[0]).attr('selected', 'selected');
+			$($('.enigma-machine-plugboard-available option')[0]).prop('selected', true);
 			$($('.enigma-machine-plugboard-available option')[1]).removeAttr('selected');		
-			$($('.enigma-machine-plugboard-uhr option')[0]).attr('selected', 'selected');			
+			$($('.enigma-machine-plugboard-uhr option')[0]).prop('selected', true);			
 			$($('.enigma-machine-plugboard-uhr option')[1]).removeAttr('selected');			
 			$('.enigma-machine-plugboard-uhr').attr('disabled', 'disabled');			
 		}
@@ -521,7 +523,7 @@ EnigmaMachineGUI.prototype = {
 		
 		this.redrawReflectorInterface();
 	},
-	redrawReflectorInterface(){
+	redrawReflectorInterface: function(){
 		var previous_reflector = $('.reflector-select').val();
 		$('.reflector-select').empty();
 
@@ -534,7 +536,7 @@ EnigmaMachineGUI.prototype = {
 		} else {
 			$('.reflector-select option').each(function(idx, item){
 				if($(item).val() == previous_reflector){
-					$(item).attr('selected', 'selected');
+					$(item).prop('selected', true);
 				}
 			});
 			if($('.reflector-select').val() != 'D'){
@@ -609,9 +611,9 @@ EnigmaMachineGUI.prototype = {
 		$('.middle-rotor-select').append(html);
 		$('.fast-rotor-select').append(html);
 	
-		$($('.slow-rotor-select option')[0]).attr('selected', 'selected');
-		$($('.middle-rotor-select option')[1]).attr('selected', 'selected');
-		$($('.fast-rotor-select option')[2]).attr('selected', 'selected');
+		$($('.slow-rotor-select option')[0]).prop('selected', true);
+		$($('.middle-rotor-select option')[1]).prop('selected', true);
+		$($('.fast-rotor-select option')[2]).prop('selected', true);
 
 
 		if(thin_rotor_set.length == 0){
@@ -949,7 +951,7 @@ EnigmaMachineGUI.prototype = {
 		
 		$(target_element).append(html);		
 	},
-	drawWiresFromEntryWheelToPlugboard(){
+	drawWiresFromEntryWheelToPlugboard: function(){
 		var adjustment_source = -2; // tweak to get lines in the right places
 		var adjustment_destination = -1; // tweak to get lines in the right places
 		
@@ -1020,7 +1022,7 @@ EnigmaMachineGUI.prototype = {
 			
 		$('.entry-wheel').append(html);
 	},
-	redrawWiresFromEntryWheelToPlugboard(){
+	redrawWiresFromEntryWheelToPlugboard: function(){
 		$('.entry-wheel .wire').remove();
 		this.drawWiresFromEntryWheelToPlugboard();			
 	},
@@ -1028,12 +1030,27 @@ EnigmaMachineGUI.prototype = {
 		$('.reflector .wire').remove();
 		this.drawWiresReflector();
 	},
-	createWire: function(x1, y1, x2, y2, extra_css_class_string = ''){
+	createWire: function(x1, y1, x2, y2, extra_css_class_string){
+		if(undefined == extra_css_class_string){
+			extra_css_class_string = '';
+		}
 		var length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 		var angle  = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
 		var transform = 'rotate(' + angle + 'deg)';
 
-		return '<div class="wire ' + extra_css_class_string + '" style="transform:rotate(' + angle + 'deg);width:' + length + 'px;left:' + x1 + 'px;top:' + y1 + 'px"></div>';
+		return '<div class="wire ' + extra_css_class_string 
+			+ '" style="' + this.transform + ':rotate(' + angle + 'deg);width:' + length + 'px;left:' + x1 + 'px;top:' + y1 + 'px"></div>';
+	},
+	getSupportedTransform: function(){
+		var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+		var css = 'transform -webkit-transform -moz-transform -o-transform -ms-transform'.split(' ');
+		var div = document.createElement('div');
+		for(var i = 0; i < prefixes.length; i++) {
+			if(div && div.style[prefixes[i]] !== undefined) {
+				return css[i];
+			}
+		}
+		return false;	
 	},
 	enigmaCipher: function(letter){
 		return this.enigma.cipher(letter);

@@ -17,7 +17,10 @@ limitations under the License.
 */
 
 // Steckerbrett
-Plugboard = function(pairs = []){
+Plugboard = function(pairs){
+	if(pairs == undefined){
+		pairs = [];
+	}
 	this.pairs = {};
 	for(var i in pairs){
 		this.pairs[pairs[i].charAt(0)] = pairs[i].charAt(1);
@@ -33,7 +36,13 @@ Plugboard.prototype = {
 }
 
 // Steckeruhr
-Uhr = function(pairs = [], setting = 0){
+Uhr = function(pairs, setting){
+	if(pairs == undefined){
+		pairs = [];
+	}
+	if(setting == undefined){
+		setting = 0;
+	}
 	Plugboard.call(this, pairs);
 	
 	this.setting = setting;
@@ -89,7 +98,10 @@ Uhr.prototype.translate = function(letter){
 }
 
 // Eintrittswalze
-EntryWheel = function(cipher_map = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
+EntryWheel = function(cipher_map){
+	if(undefined == cipher_map){
+		cipher_map = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	} 
 	this.wire_map = cipher_map.split('');
 	this.letter_map = {};
 	for(var i in this.wire_map){
@@ -106,7 +118,19 @@ EntryWheel.prototype = {
 }
 
 // Walzen
-Rotor = function(configuration = {cipher_map: '', turnover_positions: ''}, deflection = 0, ring_setting = 0){
+Rotor = function(configuration, deflection, ring_setting){
+	if(undefined == configuration){
+		configuration = {
+			cipher_map: '',
+			turnover_positions: ''
+		}
+	}
+	if(undefined == deflection){
+		deflection = 0;
+	}
+	if(undefined == ring_setting){
+		ring_setting = 0;
+	}
 	this.encipher_map = configuration.cipher_map.split('');
 	this.decipher_map = [];
 	for(var i in this.encipher_map){
@@ -143,7 +167,13 @@ Rotor.prototype = {
 }
 
 // Umkehrwalze
-ReflectorWheel = function(cipher_map = '', deflection = 0){
+ReflectorWheel = function(cipher_map, deflection){
+	if(undefined == cipher_map){
+		cipher_map = '';
+	}
+	if(undefined == deflection){
+		deflection = 0;
+	}
 	this.cipher_map = cipher_map.split('');
 	this.deflection = deflection;
 }
@@ -157,7 +187,22 @@ ReflectorWheel.prototype = {
 }
 
 // ENIGMA
-EnigmaMachine = function(machine_version = 'M4', rotor_models = [], reflector_wheel = '', plugboard = [], uhr_setting = false){
+EnigmaMachine = function(machine_version, rotor_models, reflector_wheel, plugboard, uhr_setting){
+	if(undefined == machine_version){
+		machine_version = 'M4';
+	}
+	if(undefined == rotor_models){
+		rotor_models = [];
+	}
+	if(undefined == reflector_wheel){
+		reflector_wheel = '';
+	}
+	if(undefined == plugboard){
+		plugboard = [];
+	}
+	if(undefined == uhr_setting){
+		uhr_setting = false;
+	}
 	this.loadMachines();
 	this.getMachine(machine_version);
 	this.rotors = [];

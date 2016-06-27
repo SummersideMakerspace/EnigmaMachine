@@ -840,8 +840,8 @@ limitations under the License.
 				assert.equal($('.thin-rotor .contacts').parent().hasClass('text-muted'), false, "Enigma M4 thin rotor contacts");
 			});
 			QUnit.test("Enigma keeps reflector and rotor settings after a new machine is selected if the same settings are available", function(assert){
-				$('.reflector-select').val('D').trigger('change');
 				$('.thin-rotor-select').val('γ').trigger('change');
+				$('.reflector-select').val('D').trigger('change');
 				$('.slow-rotor-select').val('V').trigger('change');
 				$('.slow-rotor-ring-setting').val('B').trigger('change');
 				$('.slow-rotor-ground-setting').val('C').trigger('change');
