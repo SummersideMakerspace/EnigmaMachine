@@ -80,21 +80,6 @@ EnigmaMachineGUI.prototype = {
 			
 			that.enigma.getMachine($('.enigma-machine-select').val());
 			that.redrawInterface();
-			that.makeEnigmaFromInterfaceSettings();
-			that.clearWires();
-			that.clearAllHotContactsAndPathTargets();
-			that.drawWires();
-			if(that.enigma.rotors.length == 4){
-				$('.thin-rotor .contacts').parent().removeClass('text-muted');
-			} else {
-				$('.thin-rotor .contacts').parent().addClass('text-muted');
-			}
-			if(that.enigma.has_plugboard){
-				$('.plugboard-settings').removeAttr('disabled');
-			} else {
-				$('.plugboard-settings').attr('disabled', 'disabled');
-			}
-			$('.enigma-io').val('');
 			
 			$('.slow-rotor-select option').each(function(idx, item){
 				if($(item).val() == previous_slow_rotor){
@@ -113,7 +98,23 @@ EnigmaMachineGUI.prototype = {
 					$(item).prop('selected', true);
 					selected_fast_rotor = true;
 				}
-			});		
+			});	
+
+			that.makeEnigmaFromInterfaceSettings();
+			that.clearWires();
+			that.clearAllHotContactsAndPathTargets();
+			that.drawWires();
+			if(that.enigma.rotors.length == 4){
+				$('.thin-rotor .contacts').parent().removeClass('text-muted');
+			} else {
+				$('.thin-rotor .contacts').parent().addClass('text-muted');
+			}
+			if(that.enigma.has_plugboard){
+				$('.plugboard-settings').removeAttr('disabled');
+			} else {
+				$('.plugboard-settings').attr('disabled', 'disabled');
+			}
+			$('.enigma-io').val('');			
 		});
 		$('.enigma-machine-plugboard-uhr').change(function(){
 			if($('.enigma-machine-plugboard-uhr').val() == 0){

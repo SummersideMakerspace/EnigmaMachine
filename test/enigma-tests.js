@@ -1721,5 +1721,28 @@ limitations under the License.
 				assert.notOk($('.ukw-d-setting-Z').parent().hasClass('has-warning'), "UKW-D setting Z does not have a warning");				
 			});
 		});
+
+		QUnit.module("Issues", function(hooks){
+			var gui = {};
+			hooks.beforeEach(function(assert){
+				gui = new EnigmaMachineGUI();
+				var done = assert.async();
+				setTimeout(function(){
+					done();				
+				}, 0);
+			});
+
+			QUnit.test("GH#3 - GUI Error: Set the rotors based on GUI settings on machine type change", function(assert){
+				$('.fast-rotor-select').val('VIII').trigger('change');
+				$('.fast-rotor-ground-setting').val('Z').trigger('change');
+				$('.enigma-machine-select').val('M3').trigger('change');
+				assert.equal($('.fast-rotor-select').val(), 'VIII', "Fast rotor keeps ground setting after machine type change");
+				assert.equal($('.fast-rotor-ground-setting').val(), 'Z', "Fast rotor keeps ground setting after machine type change");
+				$('.enigma-io').trigger({type: 'keydown', which: 65, keyCode: 65});
+				assert.equal($('.fast-rotor-ground-setting').val(), 'A', "Fast rotor advances");
+				assert.equal($('.middle-rotor-ground-setting').val(), 'B', "Middle rotor advances");
+			});
+		});	
+		
 	});
 })(jQuery);
