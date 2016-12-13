@@ -1742,6 +1742,10 @@ limitations under the License.
 				assert.equal($('.fast-rotor-ground-setting').val(), 'A', "Fast rotor advances");
 				assert.equal($('.middle-rotor-ground-setting').val(), 'B', "Middle rotor advances");
 			});
+			QUnit.test('GH#4 - Plugboard Uhr Problem: Uhr has an inbound path and an outbound path', function(assert){
+				var enigma = new EnigmaMachine('M3', ['III', 'II', 'I'], 'B', ['AZ', 'BY', 'CX', 'DW', 'EV', 'FU', 'GT', 'HS', 'IR', 'JQ'], 3);
+				assert.equal(enigma.cipher('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 'TIYBCZJPYUADKTZQIFUGVNBCRL', "Enigma M3 with rotor set III, II, I and plugboard Uhr setting 3 with plugs A<>Z, B<>Y, C<>X, D<>W, E<>V, F<>U, G<>T, H<>S, I<>R, J<>Q encodes ABCDEFGHIJKLMNOPQRSTUVWXYZ to TIYBCZJPYUADKTZQIFUGVNBCRL");			
+			});
 		});	
 		
 	});

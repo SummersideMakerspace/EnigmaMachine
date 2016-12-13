@@ -32,7 +32,13 @@ Plugboard.prototype = {
 		return ('undefined' != typeof(this.pairs[letter])) 
 			? this.pairs[letter] 
 			: letter;
-	}
+	},
+	translate_in: function(letter){
+		return this.translate(letter);
+	},
+	translate_out: function(letter){
+		return this.translate(letter);
+	}	
 }
 
 // Steckeruhr
@@ -71,22 +77,27 @@ Uhr = function(pairs, setting){
 }
 Uhr.prototype = Object.create(Plugboard.prototype);
 Uhr.prototype.constructor = Uhr;
-Uhr.prototype.translate = function(letter){
+Uhr.prototype.translate = function(letter, direction){
+	var wire_offset_for_direction = 0;
+	if('undefined' != typeof direction && direction == 'out'){
+		wire_offset_for_direction = 2;
+	}
+
 	if(this.setting == 0){
 		return Plugboard.prototype.translate.call(this, letter);
 	}
-	
-	if(this.a_plugs.indexOf(letter) > -1){
-		var a_wire = (this.a_plugs.indexOf(letter) * 4 + parseInt(this.setting)) % 40;
-		var b_wire_position = (this.ab_wiring[a_wire] + (40 - parseInt(this.setting))) % 40;
 
+	if(this.a_plugs.indexOf(letter) > -1){
+		var a_wire = (this.a_plugs.indexOf(letter) * 4 + parseInt(this.setting) + wire_offset_for_direction) % 40;
+		var b_wire_position = (this.ab_wiring[a_wire] + (40 - parseInt(this.setting))) % 40;
+		
 		return ('undefined' != typeof(this.b_plugs[this.b_plug_order[Math.floor(b_wire_position / 4)]]))
 			? this.b_plugs[this.b_plug_order[Math.floor(b_wire_position / 4)]]
 			: '';
 	}
 
 	if(this.b_plugs.indexOf(letter) > -1){
-		var b_wire = (this.b_plug_order.indexOf(parseInt([this.b_plugs.indexOf(letter)])) * 4 + parseInt(this.setting)) % 40;
+		var b_wire = (this.b_plug_order.indexOf(parseInt([this.b_plugs.indexOf(letter)])) * 4 + parseInt(this.setting) + wire_offset_for_direction) % 40;
 		var a_wire_position = (this.ab_wiring.indexOf(b_wire) + (40 - parseInt(this.setting))) % 40;
 
 		return ('undefined' != typeof(this.a_plugs[Math.floor(a_wire_position / 4)]))
@@ -94,7 +105,14 @@ Uhr.prototype.translate = function(letter){
 			: '';		
 	}
 	
-	return letter;
+	return letter;	
+	
+}
+Uhr.prototype.translate_in = function(letter){
+	return this.translate(letter, 'in');
+}
+Uhr.prototype.translate_out = function(letter){
+	return this.translate(letter, 'out');
 }
 
 // Eintrittswalze
@@ -527,7 +545,8 @@ EnigmaMachine.prototype = {
 			return '';
 		}
 		this.stepRotors();
-		var plugboard_output = this.plugboard.translate(letter);
+		var plugboard_output = this.plugboard.translate_in(letter);
+
 		if(plugboard_output == ''){
 			return '';
 		}
@@ -543,7 +562,8 @@ EnigmaMachine.prototype = {
 			rotor_input_wire_position = this.rotors[idx].decipher(rotor_input_wire_position);
 		}
 		var plugboard_input = this.entry_wheel.wireToLetter(rotor_input_wire_position);
-		var result = this.plugboard.translate(plugboard_input);
+		var result = this.plugboard.translate_out(plugboard_input);
+		
 		return result;
 	},
 	stepRotors: function(){
